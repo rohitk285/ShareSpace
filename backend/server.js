@@ -8,13 +8,11 @@ const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 
-// Environment variables and database connection
 dotenv.config();
 connectDB();
 
-// App setup
 const app = express();
-app.use(express.json()); // Parse JSON data
+app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 // Routes
@@ -35,60 +33,94 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
 
-// Initialize server
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Socket.IO setup
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:5173", // Match frontend origin
+    origin: "http://localhost:5173",
     credentials: true,
   },
 });
 
-// Socket.IO events
+// Map to store userId -> socketId mappings
+const userSockets = {};
+
 io.on("connection", (socket) => {
   console.log("Connected to Socket.IO");
 
-  // Handle user setup
   socket.on("setup", (userData) => {
+    userSockets[userData._id] = socket.id;
     socket.join(userData._id);
     socket.emit("connected");
   });
 
-  // Join a specific chat room
   socket.on("join chat", (room) => {
     socket.join(room);
     console.log(`User joined room: ${room}`);
   });
 
-  // Typing indicators
   socket.on("typing", (room) => socket.in(room).emit("typing"));
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
-  // New message handling
   socket.on("new message", (newMessageReceived) => {
     const chat = newMessageReceived.chat;
-
-    if (!chat.users) return console.log("Chat users not defined");
-
-    chat.users.forEach((user) => {
-      if (user._id === newMessageReceived.sender._id) return;
-      socket.in(user._id).emit("message received", newMessageReceived);
-    });
+  
+    if (!chat || !chat._id) {
+      console.log("Chat ID not defined");
+      return;
+    }
+  
+    console.log(`Message sent to room: ${chat._id}`);
+  
+    // Emit the message to all users in the room except the sender
+    socket.broadcast.to(chat._id).emit("message received", newMessageReceived);
   });
 
-  // Cleanup on disconnect
-  socket.off("setup", () => {
+  socket.on("video call request", ({ senderId, recipientId, roomId }) => {
+    console.log(`Video call request from ${senderId} to ${recipientId}`);
+
+    const recipientSocketId = userSockets[recipientId];
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit("incoming video call", {
+        senderId,
+        roomId,
+      });
+    } else {
+      console.log(`Recipient ${recipientId} is not connected`);
+    }
+  });
+
+  socket.on("send signal", (data) => {
+    const { userToSignal, signal, callerId } = data;
+    io.to(userToSignal).emit("receive signal", { signal, callerId });
+  });
+
+  socket.on("return signal", (data) => {
+    const { signal, callerId } = data;
+    io.to(callerId).emit("receive returned signal", { signal, id: socket.id });
+  });
+
+  socket.on("leave video room", ({ roomId, userId }) => {
+    socket.leave(roomId);
+    console.log(`User ${userId} left video room: ${roomId}`);
+    socket.to(roomId).emit("user left", userId);
+  });
+
+  socket.on("disconnect", () => {
     console.log("User disconnected");
-    socket.leave(socket.id);
+
+    for (let userId in userSockets) {
+      if (userSockets[userId] === socket.id) {
+        delete userSockets[userId];
+        break;
+      }
+    }
   });
 });

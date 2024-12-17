@@ -4,6 +4,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";  // Import Brow
 import Homepage from "./Pages/HomePage";
 import Chatpage from "./Pages/ChatPage";
 import { ChatProvider } from "./Context/ChatProvider";  // Import ChatProvider with curly braces
+import VideoCallPage from "./Pages/VideoCallPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/chats" element={<Chatpage />} />
+            <Route path="/videocall" element={<VideoCallPage />} />
           </Routes>
         </ChatProvider>
       </BrowserRouter>
