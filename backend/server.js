@@ -2,8 +2,8 @@ const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const passport = require("./config/passport"); // Import Passport config
-const session = require("express-session"); // Import express-session
+const passport = require("./config/passport");
+const session = require("express-session");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
@@ -11,8 +11,9 @@ const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const googleAuthRoutes = require("./routes/googleAuthRoutes");
 const docRoutes = require("./routes/docRoutes");
+const fileRoutes = require("./routes/fileRoutes");
 const Docs = require("./models/docModel");
-const User = require("./models/userModel"); // Import the User model
+const User = require("./models/userModel");
 const io = require("socket.io");
 
 dotenv.config();
@@ -41,6 +42,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/auth/google", googleAuthRoutes);
 app.use("/api/document", docRoutes);
+app.use("/api/file", fileRoutes);
 
 // Deployment setup
 const __dirname1 = path.resolve();
