@@ -4,7 +4,6 @@ const fileModel = new mongoose.Schema(
     {
         fileName: {type: String, required: true}, // add unique feature later
         owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-        accessTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
         link: {type: String, required: true}
     },
     {timestamps : true}

@@ -12,6 +12,7 @@ const messageRoutes = require("./routes/messageRoutes");
 const googleAuthRoutes = require("./routes/googleAuthRoutes");
 const docRoutes = require("./routes/docRoutes");
 const fileRoutes = require("./routes/fileRoutes");
+const sharedFileRoutes = require('./routes/sharedFileRoutes');
 const Docs = require("./models/docModel");
 const User = require("./models/userModel");
 const io = require("socket.io");
@@ -43,6 +44,7 @@ app.use("/api/message", messageRoutes);
 app.use("/auth/google", googleAuthRoutes);
 app.use("/api/document", docRoutes);
 app.use("/api/file", fileRoutes);
+app.use("/api/share-file", sharedFileRoutes)
 
 // Deployment setup
 const __dirname1 = path.resolve();

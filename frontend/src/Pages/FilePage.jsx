@@ -4,16 +4,17 @@ import { AiOutlineUpload } from "react-icons/ai";
 import UploadFileModal from "../components/miscellaneous/UploadFileModal";
 import { ChatState } from "../Context/ChatProvider";
 import SideDrawer from "../components/miscellaneous/SideDrawer";
+import ShareFileModal from "../components/miscellaneous/ShareFileModal";
 
 const FilePage = () => {
   const [files, setFiles] = useState([]);
-  const [folders, setFolders] = useState([]); // List of folders
-  const [newFolderName, setNewFolderName] = useState(""); // Folder name for creation
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const { user } = ChatState();
 
   // Fetch files and folders from backend
-  const fetchFilesAndFolders = async () => {
+  const fetchFiles = async () => {
     try {
       if (user) {
         // console.log(user._id)
@@ -27,14 +28,7 @@ const FilePage = () => {
           { userId: user._id },
           config
         );
-        // const { folderResponse } = await axios.post(
-        //   "http://localhost:3000/api/file/fetchFiles",
-        //   { userId: user._id },
-        //   config
-        // );
-        console.log(data);
         setFiles(data);
-        // setFolders(folderResponse);
       }
     } catch (err) {
       console.error("Could not fetch files or folders", err);
@@ -42,83 +36,13 @@ const FilePage = () => {
   };
 
   useEffect(() => {
-    fetchFilesAndFolders();
+    fetchFiles();
   }, [user]);
-
-  // Handle folder creation
-  const handleCreateFolder = async () => {
-    if (!newFolderName) {
-      console.error("Folder name cannot be empty!");
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/folder/create",
-        { name: newFolderName },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
-      console.log("Folder created successfully:", response.data);
-      setNewFolderName(""); // Clear folder input
-      fetchFilesAndFolders(); // Refresh folder list
-    } catch (error) {
-      console.error("Failed to create folder:", error);
-    }
-  };
-
-  // Handle file selection for preview
-  const handleFileClick = (file) => {
-    setSelectedFile(file);
-  };
 
   return (
     <div className="w-full h-screen">
       {user && <SideDrawer />}
       <h1 className="text-2xl font-bold mb-4">File Management</h1>
-
-      {/* Create Folder Section */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Create New Folder</h2>
-        <div className="flex items-center">
-          <input
-            type="text"
-            placeholder="New Folder Name"
-            value={newFolderName}
-            onChange={(e) => setNewFolderName(e.target.value)}
-            className="border px-4 py-2 rounded-md mr-2"
-          />
-          <button
-            onClick={handleCreateFolder}
-            className="bg-green-500 text-white px-4 py-2 rounded-md"
-          >
-            Create Folder
-          </button>
-        </div>
-      </div>
-
-      {/* Folder Listing Section */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Folders</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {folders.length === 0 ? (
-            <p>No folders yet. Create one!</p>
-          ) : (
-            folders.map((folder) => (
-              <div
-                key={folder._id}
-                className="bg-white p-4 shadow rounded-md cursor-pointer"
-              >
-                <p className="font-bold">{folder.name}</p>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
       {/* File Listing Section */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
@@ -132,50 +56,79 @@ const FilePage = () => {
             Upload Files
           </button>
         </div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="space-y-2">
           {files.length === 0 ? (
             <p>No files uploaded yet. Start uploading!</p>
           ) : (
             files.map((file) => (
-              <div key={file._id} className="bg-white p-4 shadow rounded-md">
-                <p className="font-bold">{file.fileName}</p>
+              <div
+                key={file._id}
+                className="flex items-center justify-between bg-gray-100 p-4 rounded-md shadow"
+              >
+                <div className="flex items-center space-x-4">
+                  {/* File Icon */}
+                  {file.link.endsWith(".pdf") ? (
+                    <img
+                      src="/icons/pdf-icon.png" // Replace with the actual path to your PDF icon
+                      alt="PDF Icon"
+                      className="h-8 w-8"
+                    />
+                  ) : file.link.endsWith(".jpg") ||
+                    file.link.endsWith(".png") ? (
+                    <img
+                      src="/icons/image-icon.png" // Replace with the actual path to your image icon
+                      alt="Image Icon"
+                      className="h-8 w-8"
+                    />
+                  ) : (
+                    <img
+                      src="/icons/file-icon.png" // Replace with the actual path to your file icon
+                      alt="File Icon"
+                      className="h-8 w-8"
+                    />
+                  )}
 
-                {/* File preview logic */}
-                {file.link.endsWith(".pdf") ? (
-                  <iframe
-                    src={file.link + "?content_disposition=inline"}
-                    width="100%"
-                    height="300px"
-                    title="PDF Preview"
-                  />
-                ) : file.link.endsWith(".jpg") || file.link.endsWith(".png") ? (
-                  <img
-                    src={file.link + "?content_disposition=inline"}
-                    alt="File Preview"
-                    width="100%"
-                    className="rounded-md"
-                  />
-                ) : (
+                  {/* File Name */}
+                  <p className="font-semibold text-gray-800">{file.fileName}</p>
+                </div>
+
+                {/* File Actions */}
+                <div className="flex items-center space-x-4">
                   <a
-                    href={file.link} // The link will have content_disposition=inline
+                    href={file.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 underline"
                   >
-                    View File
+                    View
                   </a>
-                )}
+                  {/* Share Button */}
+                  <button
+                    onClick={() => {
+                      setSelectedFile(file);
+                      setShowShareModal(true);
+                    }}
+                    className="bg-gray-300 px-2 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-400"
+                  >
+                    Share
+                  </button>
+                </div>
               </div>
             ))
           )}
         </div>
       </div>
-
-      {/* Modal for File Upload */}
+      {/* Share Modal */}
+      <ShareFileModal
+        isVisible={showShareModal}
+        file={selectedFile}
+        onClose={() => setShowShareModal(false)}
+      />
+      ;{/* Modal for File Upload */}
       <UploadFileModal
         isVisible={showUploadModal}
         onClose={() => setShowUploadModal(false)}
-        onUploadComplete={fetchFilesAndFolders}
+        onUploadComplete={fetchFiles}
       />
     </div>
   );

@@ -50,7 +50,6 @@ const uploadFile = async (req, res) => {
     const newFile = new File({
       fileName: fileName,
       owner: user,
-      accessTo: [], // Empty array for `accessTo`
       link: result.secure_url, // Use the secure URL from Cloudinary
     });
 
