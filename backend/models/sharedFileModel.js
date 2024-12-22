@@ -7,9 +7,12 @@ const sharedFileModel = new mongoose.Schema(
       ref: "User", 
       required: true 
     }, // User who owns the file
-    file: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "File", 
+    fileName: { 
+      type: String, 
+      required: true 
+    }, // Reference to the file being shared
+    link: { 
+      type: String,
       required: true 
     }, // Reference to the file being shared
     sharedWith: [

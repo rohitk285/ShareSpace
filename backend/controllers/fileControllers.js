@@ -62,7 +62,7 @@ const uploadFile = async (req, res) => {
   }
 };
 
-const fetchFiles = async (req, res) => {
+const fetchUploadedFiles = async (req, res) => {
   const { userId } = req.body;
 
   try {
@@ -73,4 +73,15 @@ const fetchFiles = async (req, res) => {
   }
 };
 
-module.exports = { uploadFile, fetchFiles };
+const deleteFile = async (req, res) => {
+  const { fileId } = req.body;
+
+  try {
+    await File.deleteOne({ _id: fileId });
+    res.status(200).send("File deleted successfully")
+  } catch (err) {
+    res.status(500).json({ message: "File deleting failed", err });
+  }
+};
+
+module.exports = { uploadFile, fetchUploadedFiles, deleteFile };

@@ -28,8 +28,8 @@ function SideDrawer() {
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // State to control Menu open/close for notifications
-  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = useState(null); // State to control Menu open/close for profile menu
+  const [anchorEl, setAnchorEl] = useState(null); // Notification menu
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = useState(null); // Profile menu
 
   const {
     setSelectedChat,
@@ -46,12 +46,10 @@ function SideDrawer() {
     navigate("/");
   };
 
-  const handleSearch = async () => {
-    if (!search) {
-      toast.error("Please enter something in search", {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 5000,
-      });
+  const handleSearch = async (value) => {
+    setSearch(value);
+    if (!value) {
+      setSearchResult([]);
       return;
     }
 
@@ -63,16 +61,17 @@ function SideDrawer() {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:3000/api/user?search=${search}`,
+        `http://localhost:3000/api/user?search=${value}`,
         config
       );
-      setLoading(false);
       setSearchResult(data);
+      setLoading(false);
     } catch (error) {
       toast.error("Error occurred while fetching search results", {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 5000,
       });
+      setLoading(false);
     }
   };
 
@@ -104,7 +103,7 @@ function SideDrawer() {
   };
 
   const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget); // Open notification menu on icon click
+    setAnchorEl(event.currentTarget); // Open notification menu
   };
 
   const handleMenuClose = () => {
@@ -112,7 +111,7 @@ function SideDrawer() {
   };
 
   const handleProfileMenuClick = (event) => {
-    setProfileMenuAnchorEl(event.currentTarget); // Open profile menu on avatar click
+    setProfileMenuAnchorEl(event.currentTarget); // Open profile menu
   };
 
   const handleProfileMenuClose = () => {
@@ -122,7 +121,7 @@ function SideDrawer() {
   return (
     <>
       <Box
-        className="flex justify-between items-center bg-white p-4 border-b-4 border-gray-200 w-full" 
+        className="flex justify-between items-center bg-white p-4 border-b-4 border-gray-200 w-full"
         style={{ height: "60px", width: "100%" }}
       >
         <Button
@@ -137,23 +136,44 @@ function SideDrawer() {
         <h1 className="text-2xl font-sans">ShareSpace</h1>
 
         <div className="flex items-center space-x-4">
-          {/* New Button for /docs */}
+          {/* Styled Buttons */}
           <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/docs")}
-            style={{ textTransform: "none" }} // Optional: To avoid uppercase text
+            onClick={() => navigate("/chats")}
+            className="transition-all bg-transparent border-none hover:bg-gray-200 p-2 rounded-lg"
+            style={{
+              textTransform: "none",
+              boxShadow: "none",
+              position: "relative",
+              color: "inherit",
+            }}
           >
-            See Documents
+            Chats
           </Button>
 
           <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/files")}
-            style={{ textTransform: "none" }} // Optional: To avoid uppercase text
+            onClick={() => navigate("/docs")}
+            className="transition-all bg-transparent border-none hover:bg-gray-200 p-2 rounded-lg"
+            style={{
+              textTransform: "none",
+              boxShadow: "none",
+              position: "relative",
+              color: "inherit",
+            }}
           >
-            See Files
+            Documents
+          </Button>
+
+          <Button
+            onClick={() => navigate("/files")}
+            className="transition-all bg-transparent border-none hover:bg-gray-200 p-2 rounded-lg"
+            style={{
+              textTransform: "none",
+              boxShadow: "none",
+              position: "relative",
+              color: "inherit",
+            }}
+          >
+            Files
           </Button>
 
           <IconButton onClick={handleMenuClick}>
@@ -164,7 +184,7 @@ function SideDrawer() {
 
           <Menu
             anchorEl={anchorEl}
-            open={Boolean(anchorEl)} // Use the state to control the open prop
+            open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
             <MenuList>
@@ -175,7 +195,7 @@ function SideDrawer() {
                   onClick={() => {
                     setSelectedChat(notif.chat);
                     setNotification(notification.filter((n) => n !== notif));
-                    handleMenuClose(); // Close the menu after selection
+                    handleMenuClose();
                   }}
                 >
                   {notif.chat.isGroupChat
@@ -192,7 +212,7 @@ function SideDrawer() {
 
           <Menu
             anchorEl={profileMenuAnchorEl}
-            open={Boolean(profileMenuAnchorEl)} // Use the state to control the open prop
+            open={Boolean(profileMenuAnchorEl)}
             onClose={handleProfileMenuClose}
           >
             <MenuList>
@@ -216,18 +236,9 @@ function SideDrawer() {
             variant="outlined"
             fullWidth
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
             className="mb-4"
           />
-          <Button
-            onClick={handleSearch}
-            variant="contained"
-            color="primary"
-            fullWidth
-            className="mb-4"
-          >
-            Go
-          </Button>
 
           {loading ? (
             <ChatLoading />

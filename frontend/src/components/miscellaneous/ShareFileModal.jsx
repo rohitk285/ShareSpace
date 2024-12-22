@@ -10,14 +10,14 @@ const ShareFileModal = ({ isVisible, file, onClose }) => {
   // Add collaborator handler
   const handleShareFile = async (userId) => {
     try {
-      console.log(file._id, userId, file.owner);
+      // console.log(file._id, userId, file.owner);
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
 
       await axios.post(
         "http://localhost:3000/api/share-file/shareFile",
-        { fileId: file._id, userId: userId, owner: file.owner },
+        { fileName: file.fileName, link: file.link, userId: userId, owner: file.owner },
         config
       );
 

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Modal, Box, Typography, IconButton, Button } from "@mui/material";
 import { Visibility as ViewIcon } from "@mui/icons-material";
-// import { useDisclosure } from "@chakra-ui/react"; // MUI doesn't have built-in modal management, use custom state here
 
 const ProfileModal = ({ user, children }) => {
   const [open, setOpen] = useState(false);
