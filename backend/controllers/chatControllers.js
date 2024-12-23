@@ -13,6 +13,7 @@ const accessChat = async (req, res) => {
   }
 
   try {
+    // check if private chat already exists
     let isChat = await Chat.find({
       isGroupChat: false,
       $and: [
@@ -82,6 +83,14 @@ const createGroupChat = async (req, res) => {
 
   let users = JSON.parse(req.body.users);
 
+  // creating the members array with the current time in 'added'
+  let members = users.map(user => ({
+    user: user, 
+    added: new Date().toISOString(),  // add the current time of creating group and adding members
+  }));
+
+  members.push({user: req.body.userId, added: new Date().toISOString()});
+
   if (users.length < 2) {
     return res
       .status(400)
@@ -94,6 +103,7 @@ const createGroupChat = async (req, res) => {
     const groupChat = await Chat.create({
       chatName: req.body.name,
       users: users,
+      members: members,
       isGroupChat: true,
       groupAdmin: req.user,
     });
@@ -141,7 +151,12 @@ const removeFromGroup = async (req, res) => {
   try {
     const removed = await Chat.findByIdAndUpdate(
       chatId,
-      { $pull: { users: userId } },
+      {
+        $pull: {
+          users: userId,
+          members: { user: userId }, // remove from members array where user matches
+        },
+      },
       { new: true }
     )
       .populate("users", "-password")
@@ -163,9 +178,18 @@ const addToGroup = async (req, res) => {
   const { chatId, userId } = req.body;
 
   try {
+    // Add the user to the users array and the members array with the current timestamp
     const added = await Chat.findByIdAndUpdate(
       chatId,
-      { $push: { users: userId } },
+      {
+        $push: {
+          users: userId,
+          members: {
+            user: userId, 
+            added: new Date().toISOString(), // adding the current timestamp
+          },
+        },
+      },
       { new: true }
     )
       .populate("users", "-password")
@@ -174,11 +198,24 @@ const addToGroup = async (req, res) => {
     if (!added) {
       return res.status(404).json({ message: "Chat Not Found" });
     }
+
     res.json(added);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
+const changeToggle = async (req, res) => {
+  const {chatId, toggleState} = req.body;
+
+  try{
+    await Chat.updateOne({_id: chatId}, {$set : {toggleState: toggleState}});
+    res.status(200).send("Successfully updated toggle state");
+  }
+  catch(err){
+    res.status(500).send({message: err.message});
+  }
+}
 
 module.exports = {
   accessChat,
@@ -187,4 +224,5 @@ module.exports = {
   renameGroup,
   addToGroup,
   removeFromGroup,
+  changeToggle
 };

@@ -5,6 +5,7 @@ import {
   CircularProgress,
   Box,
   Typography,
+  Switch,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useEffect, useState } from "react";
@@ -24,12 +25,14 @@ let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
+  const [filteredMessages, setFilteredMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showAllMessages, setShowAllMessages] = useState(false);
   const { selectedChat, setSelectedChat, user, notification, setNotification } =
     ChatState();
 
@@ -60,12 +63,62 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       );
       setMessages(data);
       setLoading(false);
+      setShowAllMessages(selectedChat.toggleState);
 
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
       console.error("Error fetching messages", error);
     }
   };
+
+  const filterMessages = () => {
+    if (!selectedChat || !messages.length) return;
+
+    if (showAllMessages || !selectedChat.isGroupChat) {
+      setFilteredMessages(messages);
+      return;
+    }
+
+    // console.log(user._id);
+
+    // for(let i=0; i<selectedChat.members.length; i++){
+    //   console.log(selectedChat.members[i].user === user._id);
+    // }
+
+    const memberJoinTimestamp = selectedChat.members.find(
+      (member) => member.user === user._id
+    )?.added;
+    // console.log(memberJoinTimestamp);
+
+    const filtered = messages.filter(
+      (message) => new Date(message.createdAt) >= new Date(memberJoinTimestamp)
+    );
+    setFilteredMessages(filtered);
+  };
+
+  useEffect(() => {
+    filterMessages();
+  }, [messages, showAllMessages]);
+
+  const chatHistoryToggle = async (toggleState) => {
+    try{
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      await axios.post(
+        "http://localhost:3000/api/chat/changeToggle",
+        {chatId: selectedChat._id, toggleState: toggleState},
+        config
+      );
+      setShowAllMessages(toggleState);
+    }
+    catch(err){
+      console.error("Could not change toggle", err);
+    }
+  }
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
@@ -186,7 +239,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               icon={<ArrowBack />}
               onClick={() => setSelectedChat("")}
             />
-            {messages &&
+            {filteredMessages &&
               (!selectedChat.isGroupChat ? (
                 <>
                   {getSender(user, selectedChat.users)}
@@ -197,6 +250,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <>
                   {selectedChat.chatName}
+                  {selectedChat.groupAdmin._id === user._id && (
+                    <Switch
+                      checked={showAllMessages}
+                      onChange={(e) => chatHistoryToggle(e.target.checked)}
+                      color="primary"
+                      sx={{ ml: 2 }}
+                    />
+                  )}
                   <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
                     fetchAgain={fetchAgain}
@@ -225,7 +286,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableChat messages={messages} />
+                <ScrollableChat messages={filteredMessages} />
               </div>
             )}
 
@@ -255,7 +316,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   😊
                 </IconButton>
                 {showEmojiPicker && (
-                  <Box sx={{ position: "absolute", bottom: "60px", zIndex: 10 }}>
+                  <Box
+                    sx={{ position: "absolute", bottom: "60px", zIndex: 10 }}
+                  >
                     <EmojiPicker onEmojiClick={onEmojiClick} />
                   </Box>
                 )}
