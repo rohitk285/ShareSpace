@@ -1,13 +1,11 @@
 import {
     Modal,
     Box,
-    IconButton,
     Button,
     CircularProgress,
     TextField,
     Typography,
   } from "@mui/material";
-  import { AddCircleOutline } from "@mui/icons-material"; // Example MUI icon
   import axios from "axios";
   import { useState } from "react";
   import { ChatState } from "../../Context/ChatProvider";

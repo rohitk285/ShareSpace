@@ -192,7 +192,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 </>
               ) : (
                 <>
-                  {selectedChat.chatName.toUpperCase()}
+                  {selectedChat.chatName}
                   <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
                     fetchAgain={fetchAgain}
@@ -227,14 +227,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
             <FormControl onKeyDown={sendMessage} sx={{ mt: 3 }} required>
               {isTyping && (
-                <div>
+                <Box
+                  sx={{
+                    display: "inline-block",
+                    borderRadius: "50px", // Makes the edges round
+                    padding: "8px", // Adds slight padding around the animation
+                    marginBottom: "15px", // Keeps the animation aligned
+                    marginLeft: "0",
+                  }}
+                >
                   <Lottie
                     options={defaultOptions}
-                    width={70}
-                    style={{ marginBottom: 15, marginLeft: 0 }}
+                    width={50} // Adjust size as needed
+                    style={{ margin: 0 }}
                   />
-                </div>
+                </Box>
               )}
+
               <Input
                 sx={{ backgroundColor: "#E0E0E0" }}
                 placeholder="Enter a message..."

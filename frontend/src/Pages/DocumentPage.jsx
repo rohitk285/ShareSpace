@@ -210,9 +210,10 @@ const DocumentPage = () => {
         { docId },
         config
       );
-      const collab = data.collaborators.map(collaborator => collaborator._id);
+      const collab = data.collaborators.map((collaborator) => collaborator._id);
       return data &&
-        (data.documentType === 'public' || (data && (data.creator === user._id || collab.includes(user._id))))
+        (data.documentType === "public" ||
+          (data && (data.creator === user._id || collab.includes(user._id))))
         ? true
         : false;
     } catch (err) {
@@ -238,9 +239,8 @@ const DocumentPage = () => {
     <div className="w-full h-screen">
       {user && <SideDrawer />}
       <div className="p-6">
-        <div className="container mx-auto flex justify-between items-center mb-10">
-          <h2 className="font-semibold text-2xl">Documents created by you:</h2>
-
+        <div className="container mx-auto flex justify-between items-center mb-8">
+          <h2 className="font-semibold text-xl">Documents created by you:</h2>
           <Button
             variant="contained"
             color="primary"
@@ -253,7 +253,7 @@ const DocumentPage = () => {
 
         <Grid container spacing={2}>
           {docs.length === 0 ? (
-            <p>No documents created yet.</p>
+            <p className="text-gray-500">No documents created yet.</p>
           ) : (
             docs.map((doc, index) => {
               const formattedDate = new Date(doc.createdAt).toLocaleString(
@@ -261,11 +261,10 @@ const DocumentPage = () => {
                 {
                   weekday: "short",
                   year: "numeric",
-                  month: "long",
+                  month: "short",
                   day: "numeric",
                   hour: "2-digit",
                   minute: "2-digit",
-                  second: "2-digit",
                   hour12: true,
                 }
               );
@@ -273,36 +272,72 @@ const DocumentPage = () => {
               return (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Box
-                    className="p-4 bg-gray-700 text-white font-semibold rounded-lg flex justify-between items-center"
-                    sx={{ cursor: "pointer", boxShadow: 3 }}
-                    onClick={() => openDocument(doc._id)}
+                    className="p-3 bg-gray-800 text-white rounded-md flex flex-col justify-between"
+                    sx={{ boxShadow: 2 }}
                   >
-                    <div>
-                      <h1>{doc.documentName}</h1>
-                      <p>Created on {formattedDate}</p>
-                      <p>Document ID: {doc._id}</p>
+                    <div className="mb-2">
+                      <h1 className="font-medium text-base truncate">
+                        {doc.documentName}
+                      </h1>
+                      <p className="text-xs text-gray-400">
+                        Created on: {formattedDate}
+                      </p>
+                      <p className="text-xs text-gray-500">ID: {doc._id}</p>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex justify-between">
                       <Button
                         variant="contained"
-                        color="secondary"
+                        size="small"
+                        sx={{
+                          backgroundColor: "#187bd1",
+                          color: "#fff",
+                          "&:hover": {
+                            backgroundColor: "#166dba", // Darker blue on hover
+                          },
+                        }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete(doc._id);
+                          openDocument(doc._id);
                         }}
                       >
-                        Delete
+                        Open
                       </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openCollaborators(doc._id); // Open the modal when clicked
-                        }}
-                      >
-                        See Collaborators
-                      </Button>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{
+                            backgroundColor: "#d32f2f",
+                            color: "#fff",
+                            "&:hover": {
+                              backgroundColor: "#ab2424", // Darker red on hover
+                            },
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(doc._id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{
+                            backgroundColor: "#187bd1",
+                            color: "#fff",
+                            "&:hover": {
+                              backgroundColor: "#166dba", // Darker blue on hover
+                            },
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openCollaborators(doc._id);
+                          }}
+                        >
+                          Collaborators
+                        </Button>
+                      </div>
                     </div>
                   </Box>
                 </Grid>
@@ -311,13 +346,15 @@ const DocumentPage = () => {
           )}
         </Grid>
 
-        <div className="mt-10">
-          <h2 className="font-semibold text-2xl">
+        <div className="mt-8">
+          <h2 className="font-semibold text-xl mb-4">
             Documents you are collaborating on:
           </h2>
           <Grid container spacing={2}>
             {docsCollab.length === 0 ? (
-              <p>You are not collaborating on any documents yet.</p>
+              <p className="text-gray-500">
+                You are not collaborating on any documents yet.
+              </p>
             ) : (
               docsCollab.map((doc, index) => {
                 const formattedDate = new Date(doc.createdAt).toLocaleString(
@@ -325,11 +362,10 @@ const DocumentPage = () => {
                   {
                     weekday: "short",
                     year: "numeric",
-                    month: "long",
+                    month: "short",
                     day: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",
-                    second: "2-digit",
                     hour12: true,
                   }
                 );
@@ -337,25 +373,51 @@ const DocumentPage = () => {
                 return (
                   <Grid item xs={12} sm={6} md={4} key={index}>
                     <Box
-                      className="p-4 bg-gray-700 text-white font-semibold rounded-lg flex justify-between items-center"
-                      sx={{ cursor: "pointer", boxShadow: 3 }}
+                      className="p-3 bg-gray-800 text-white rounded-md flex flex-col justify-between"
+                      sx={{ cursor: "pointer", boxShadow: 2 }}
                       onClick={() => openDocument(doc._id)}
                     >
-                      <div>
-                        <h1>{doc.documentName}</h1>
-                        <p>Created on {formattedDate}</p>
-                        <p>Created by: {doc.creator.email}</p>
-                        <p>Document ID: {doc._id}</p>
+                      <div className="mb-2">
+                        <h1 className="font-medium text-base truncate">
+                          {doc.documentName}
+                        </h1>
+                        <p className="text-xs text-gray-400">
+                          Created on: {formattedDate}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Created by: {doc.creator.email}
+                        </p>
+                        <p className="text-xs text-gray-500">ID: {doc._id}</p>
+                      </div>
+                      <div className="flex justify-between">
                         <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openCollaborators(doc._id); // Open the modal when clicked
-                        }}
-                      >
-                        See Collaborators
-                      </Button>
+                          variant="outlined"
+                          size="small"
+                          sx={{
+                            backgroundColor: "#187bd1",
+                            color: "#fff",
+                            "&:hover": {
+                              backgroundColor: "#166dba", // Darker blue on hover
+                            },
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDocument(doc._id);
+                          }}
+                        >
+                          Open
+                        </Button>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="primary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openCollaborators(doc._id);
+                          }}
+                        >
+                          Collaborators
+                        </Button>
                       </div>
                     </Box>
                   </Grid>
@@ -442,7 +504,6 @@ const DocumentPage = () => {
         setCollaborators={setCollaborators}
         docCreator={docCreator}
       />
-
     </div>
   );
 };
