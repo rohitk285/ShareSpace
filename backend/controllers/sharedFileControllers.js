@@ -41,6 +41,11 @@ const deleteSharedFile = async (req, res) => {
     try {
       await Share.updateOne({_id: sharedFileId}, {$pull : {sharedWith: userId}});
       // add feature - delete shared file from database if sharedWith array is empty after deletion
+      const sharedWithArray = await Share.findOne({_id: sharedFileId});
+      // console.log(sharedWithArray.sharedWith);
+      if(sharedWithArray.sharedWith.length === 0){
+        await Share.deleteOne({_id: sharedFileId});
+      }
       res.status(200).send("Successfully deleted shared file");
     } catch (err) {
       res.status(500).send("Error : Could not delete shared files");
