@@ -17,6 +17,7 @@ import { ChatState } from "../Context/ChatProvider";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
+import EmojiPicker from "emoji-picker-react";
 
 const ENDPOINT = "http://localhost:3000";
 let socket, selectedChatCompare;
@@ -28,6 +29,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { selectedChat, setSelectedChat, user, notification, setNotification } =
     ChatState();
 
@@ -87,8 +89,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         );
 
         socket.emit("new message", data);
-
-        // Append the new message to the current state
         setMessages((prevMessages) => [...prevMessages, data]);
       } catch (error) {
         console.error("Error sending message", error);
@@ -158,6 +158,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
+  };
+
+  const onEmojiClick = (emojiObject) => {
+    setNewMessage((prev) => prev + emojiObject.emoji);
   };
 
   return (
@@ -230,26 +234,42 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <Box
                   sx={{
                     display: "inline-block",
-                    borderRadius: "50px", // Makes the edges round
-                    padding: "8px", // Adds slight padding around the animation
-                    marginBottom: "15px", // Keeps the animation aligned
+                    borderRadius: "50px",
+                    padding: "8px",
+                    marginBottom: "15px",
                     marginLeft: "0",
                   }}
                 >
                   <Lottie
                     options={defaultOptions}
-                    width={50} // Adjust size as needed
+                    width={50}
                     style={{ margin: 0 }}
                   />
                 </Box>
               )}
-
-              <Input
-                sx={{ backgroundColor: "#E0E0E0" }}
-                placeholder="Enter a message..."
-                value={newMessage}
-                onChange={typingHandler}
-              />
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <IconButton
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  sx={{ mr: 2 }}
+                >
+                  😊
+                </IconButton>
+                {showEmojiPicker && (
+                  <Box sx={{ position: "absolute", bottom: "60px", zIndex: 10 }}>
+                    <EmojiPicker onEmojiClick={onEmojiClick} />
+                  </Box>
+                )}
+                <Input
+                  sx={{
+                    backgroundColor: "#E0E0E0",
+                    borderRadius: "10px",
+                    flex: 1,
+                  }}
+                  placeholder="Enter a message..."
+                  value={newMessage}
+                  onChange={typingHandler}
+                />
+              </Box>
             </FormControl>
           </Box>
         </>

@@ -5,29 +5,16 @@ import {
   MenuItem,
   MenuList,
   Avatar,
-  TextField,
-  Drawer,
   Box,
-  CircularProgress,
   Button,
 } from "@mui/material";
 import { Notifications as BellIcon } from "@mui/icons-material";
-import { Search as SearchIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast } from "react-toastify";
 import ProfileModal from "./ProfileModal";
-import ChatLoading from "../ChatLoading";
 import { ChatState } from "../../Context/ChatProvider";
-import UserListItem from "../userAvatar/UserListItem";
 
 function SideDrawer() {
-  const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [loadingChat, setLoadingChat] = useState(false);
-  const [openDrawer, setOpenDrawer] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // Notification menu
   const [profileMenuAnchorEl, setProfileMenuAnchorEl] = useState(null); // Profile menu
 
@@ -35,71 +22,13 @@ function SideDrawer() {
     setSelectedChat,
     user,
     notification,
-    setNotification,
-    chats,
-    setChats,
+    setNotification
   } = ChatState();
   const navigate = useNavigate();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     navigate("/");
-  };
-
-  const handleSearch = async (value) => {
-    setSearch(value);
-    if (!value) {
-      setSearchResult([]);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.get(
-        `http://localhost:3000/api/user?search=${value}`,
-        config
-      );
-      setSearchResult(data);
-      setLoading(false);
-    } catch (error) {
-      toast.error("Error occurred while fetching search results", {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 5000,
-      });
-      setLoading(false);
-    }
-  };
-
-  const accessChat = async (userId) => {
-    try {
-      setLoadingChat(true);
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.post(
-        "http://localhost:3000/api/chat",
-        { userId },
-        config
-      );
-
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
-      setSelectedChat(data);
-      setLoadingChat(false);
-      setOpenDrawer(false);
-    } catch (error) {
-      toast.error("Error fetching the chat", {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 5000,
-      });
-    }
   };
 
   const handleMenuClick = (event) => {
@@ -124,15 +53,6 @@ function SideDrawer() {
         className="flex justify-between items-center bg-white p-4 border-b-4 border-gray-200 w-full"
         style={{ height: "60px", width: "100%" }}
       >
-        <Button
-          variant="text"
-          onClick={() => setOpenDrawer(true)}
-          className="flex items-center"
-        >
-          <SearchIcon />
-          <span className="ml-2 hidden md:inline">Search User</span>
-        </Button>
-
         <h1 className="text-2xl font-sans">ShareSpace</h1>
 
         <div className="flex items-center space-x-4">
@@ -224,37 +144,6 @@ function SideDrawer() {
           </Menu>
         </div>
       </Box>
-
-      <Drawer
-        anchor="left"
-        open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
-      >
-        <Box className="p-4 w-80">
-          <TextField
-            label="Search by name or email"
-            variant="outlined"
-            fullWidth
-            value={search}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="mb-4"
-          />
-
-          {loading ? (
-            <ChatLoading />
-          ) : (
-            searchResult?.map((user) => (
-              <UserListItem
-                key={user._id}
-                user={user}
-                handleFunction={() => accessChat(user._id)}
-              />
-            ))
-          )}
-
-          {loadingChat && <CircularProgress className="mx-auto" />}
-        </Box>
-      </Drawer>
     </>
   );
 }
