@@ -25,7 +25,7 @@ const Login = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/user/login",
+        "http://localhost:8080/api/user/login",
         { email, password },
         {
           headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ const Login = () => {
       if (token) {
         try {
           // Fetch user data from your backend using the token
-          const { data } = await axios.get("http://localhost:3000/api/user/googleUser", {
+          const { data } = await axios.get("http://localhost:8080/api/user/googleUser", {
             headers: {
               Authorization: `Bearer ${token}`, // Pass the token if required for fetching user details
             },
@@ -77,7 +77,7 @@ const Login = () => {
 
   // Initiate Google Login
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "http://localhost:8080/auth/google";
   };
 
   return (

@@ -43,7 +43,7 @@ function TextEditor() {
         };
 
         const { data } = await axios.post(
-          "http://localhost:3000/api/document/getDocDetails",
+          "http://localhost:8080/api/document/getDocDetails",
           { docId: documentId },
           config
         );
@@ -68,7 +68,7 @@ function TextEditor() {
   // Socket connection setup
   useEffect(() => {
     if (hasAccess) {
-      const socketConnection = io("http://localhost:3000");
+      const socketConnection = io("http://localhost:8080");
       setSocket(socketConnection);
 
       return () => {

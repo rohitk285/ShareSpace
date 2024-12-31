@@ -20,7 +20,7 @@ import ScrollableChat from "./ScrollableChat";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import EmojiPicker from "emoji-picker-react";
 
-const ENDPOINT = "http://localhost:3000";
+const ENDPOINT = "http://localhost:8080";
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -60,7 +60,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `http://localhost:3000/api/message/${selectedChat._id}`,
+        `http://localhost:8080/api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -111,7 +111,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       };
 
       await axios.post(
-        "http://localhost:3000/api/chat/changeToggle",
+        "http://localhost:8080/api/chat/changeToggle",
         { chatId: selectedChat._id, toggleState: toggleState },
         config
       );
@@ -134,7 +134,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setNewMessage("");
 
         const { data } = await axios.post(
-          "http://localhost:3000/api/message",
+          "http://localhost:8080/api/message",
           {
             content: newMessage,
             chatId: selectedChat,

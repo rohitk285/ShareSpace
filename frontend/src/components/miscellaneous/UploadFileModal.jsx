@@ -36,7 +36,7 @@ const UploadFileModal = ({ isVisible, onClose, onUploadComplete }) => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:3000/api/file/upload",
+        "http://localhost:8080/api/file/upload",
         formData,
         {
           headers: {

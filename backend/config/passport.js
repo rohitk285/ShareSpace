@@ -10,7 +10,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID, // Ensure this is being loaded correctly
       clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Ensure this is being loaded correctly
-      callbackURL: "http://localhost:3000/auth/google/callback", // Adjust according to your application setup
+      callbackURL: "http://localhost:8080/auth/google/callback", // Adjust according to your application setup
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

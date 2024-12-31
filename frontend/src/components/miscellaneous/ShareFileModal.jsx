@@ -16,7 +16,7 @@ const ShareFileModal = ({ isVisible, file, onClose }) => {
       };
 
       await axios.post(
-        "http://localhost:3000/api/share-file/shareFile",
+        "http://localhost:8080/api/share-file/shareFile",
         { originalFileId: file._id, fileName: file.fileName, link: file.link, userId: userId, owner: file.owner },
         config
       );
@@ -38,7 +38,7 @@ const ShareFileModal = ({ isVisible, file, onClose }) => {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:3000/api/user?search=${query}`,
+        `http://localhost:8080/api/user?search=${query}`,
         config
       );
 

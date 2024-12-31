@@ -44,7 +44,7 @@ const DocumentPage = () => {
       try {
         if (user) {
           const response = await axios.post(
-            "http://localhost:3000/api/document/fetchDocuments",
+            "http://localhost:8080/api/document/fetchDocuments",
             { _id: user._id },
             {
               headers: {
@@ -63,7 +63,7 @@ const DocumentPage = () => {
       try {
         if (user) {
           const response = await axios.post(
-            "http://localhost:3000/api/document/fetchDocumentsCollab",
+            "http://localhost:8080/api/document/fetchDocumentsCollab",
             { _id: user._id },
             {
               headers: {
@@ -92,7 +92,7 @@ const DocumentPage = () => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:3000/api/document/getDocDetails",
+        "http://localhost:8080/api/document/getDocDetails",
         { docId },
         config
       );
@@ -131,7 +131,7 @@ const DocumentPage = () => {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:3000/api/user?search=${query}`,
+        `http://localhost:8080/api/user?search=${query}`,
         config
       );
       setSearchResults(data);
@@ -163,7 +163,7 @@ const DocumentPage = () => {
           },
         };
         const response = await axios.post(
-          "http://localhost:3000/api/document/createDocument",
+          "http://localhost:8080/api/document/createDocument",
           documentData,
           config
         );
@@ -187,7 +187,7 @@ const DocumentPage = () => {
         },
       };
       await axios.post(
-        "http://localhost:3000/api/document/deleteDocument",
+        "http://localhost:8080/api/document/deleteDocument",
         { docId },
         config
       );
@@ -205,7 +205,7 @@ const DocumentPage = () => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:3000/api/document/getDocDetails",
+        "http://localhost:8080/api/document/getDocDetails",
         { docId },
         config
       );

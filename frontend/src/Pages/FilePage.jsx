@@ -28,7 +28,7 @@ const FilePage = () => {
           },
         };
         const { data } = await axios.post(
-          "http://localhost:3000/api/file/fetchUploadedFiles",
+          "http://localhost:8080/api/file/fetchUploadedFiles",
           { userId: user._id },
           config
         );
@@ -49,7 +49,7 @@ const FilePage = () => {
           },
         };
         const { data } = await axios.post(
-          "http://localhost:3000/api/share-file/fetchSharedFiles",
+          "http://localhost:8080/api/share-file/fetchSharedFiles",
           { userId: user._id },
           config
         );
@@ -77,7 +77,7 @@ const FilePage = () => {
           },
         };
         await axios.post(
-          "http://localhost:3000/api/file/deleteFile",
+          "http://localhost:8080/api/file/deleteFile",
           { fileId: fileId },
           config
         );
@@ -104,7 +104,7 @@ const FilePage = () => {
           },
         };
         await axios.post(
-          "http://localhost:3000/api/share-file/deleteSharedFile",
+          "http://localhost:8080/api/share-file/deleteSharedFile",
           { sharedFileId: file._id, originalFileId: file.originalFileId, userId: user._id },
           config
         );

@@ -27,7 +27,7 @@ const Signup = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/user",
+        "http://localhost:8080/api/user",
         { name, email, password },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -48,7 +48,7 @@ const Signup = () => {
 
       if (token) {
         try {
-          const { data } = await axios.get("http://localhost:3000/api/user/googleUser", {
+          const { data } = await axios.get("http://localhost:8080/api/user/googleUser", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -69,7 +69,7 @@ const Signup = () => {
   }, [navigate]);
 
   const handleGoogleSignup = () => {
-    window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "http://localhost:8080/auth/google";
   };
 
   return (

@@ -20,7 +20,7 @@ const CollaboratorsModal = ({
       };
 
       await axios.post(
-        "http://localhost:3000/api/document/addCollaborator",
+        "http://localhost:8080/api/document/addCollaborator",
         { docId: documentId, userId: userId },
         config
       );
@@ -46,7 +46,7 @@ const CollaboratorsModal = ({
       };
 
       await axios.post(
-        "http://localhost:3000/api/document/removeCollaborator",
+        "http://localhost:8080/api/document/removeCollaborator",
         { docId: documentId, collaboratorId: collaboratorId },
         config
       );
@@ -70,7 +70,7 @@ const CollaboratorsModal = ({
         },
       };
       const { data } = await axios.get(
-        `http://localhost:3000/api/user?search=${query}`,
+        `http://localhost:8080/api/user?search=${query}`,
         config
       );
 

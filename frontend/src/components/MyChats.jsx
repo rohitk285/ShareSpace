@@ -39,7 +39,7 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
       const { data } = await axios.get(
-        "http://localhost:3000/api/chat",
+        "http://localhost:8080/api/chat",
         config
       );
 
@@ -70,7 +70,7 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:3000/api/chat",
+        "http://localhost:8080/api/chat",
         { userId },
         config
       );
@@ -102,7 +102,7 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:3000/api/user?search=${value}`,
+        `http://localhost:8080/api/user?search=${value}`,
         config
       );
       setSearchResult(data);

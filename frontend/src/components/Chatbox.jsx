@@ -39,7 +39,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    socket.current = io("http://localhost:3000", {
+    socket.current = io("http://localhost:8080", {
       withCredentials: true,  // Use cookies for authentication if necessary
     });
 
