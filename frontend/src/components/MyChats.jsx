@@ -15,6 +15,7 @@ import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
 import UserListItem from "../components/userAvatar/UserListItem";
+import CryptoJS from "crypto-js";
 
 const MyChats = ({ fetchAgain }) => {
   const [loading, setLoading] = useState(false);
@@ -27,9 +28,19 @@ const MyChats = ({ fetchAgain }) => {
     selectedChat,
     setSelectedChat,
     user,
-    chats = [],  //default value of [] is set if chats is null
+    chats = [], //default value of [] is set if chats is null
     setChats,
   } = ChatState();
+
+  // Function to decrypt a message
+  const decryptMessage = (encryptedMessage) => {
+    const bytes = CryptoJS.AES.decrypt(
+      encryptedMessage,
+      import.meta.env.VITE_SECRET_KEY
+    );
+    const decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
+    return decryptedMessage;
+  };
 
   const fetchChats = async () => {
     try {
@@ -38,13 +49,23 @@ const MyChats = ({ fetchAgain }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(
-        "http://localhost:8080/api/chat",
-        config
-      );
+      let { data } = await axios.get("http://localhost:8080/api/chat", config);
 
       if (Array.isArray(data)) {
-        setChats(data);
+        const decryptedChats = data.map((obj) => {
+          if (obj.latestMessage && obj.latestMessage.content) {
+            try {
+              // Decrypt the content if it exists
+              obj.latestMessage.content = decryptMessage(obj.latestMessage.content);
+            } catch (decryptionError) {
+              console.error("Decryption failed for message:", obj.latestMessage.content, decryptionError);
+              obj.latestMessage.content = "Error decrypting message.";
+            }
+          }
+          return obj; // Return the updated object
+        });
+        
+        setChats(decryptedChats);
       } else {
         console.error("Error: API returned non-array data", data);
         setChats([]);

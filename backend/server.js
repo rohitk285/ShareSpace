@@ -118,7 +118,6 @@ socketIo.on("connection", (socket) => {
 
     chat.users.forEach((user) => {
       if (user._id == newMessageRecieved.sender._id) return;
-
       socket.in(user._id).emit("message recieved", newMessageRecieved);
     });
   });

@@ -19,6 +19,7 @@ import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import EmojiPicker from "emoji-picker-react";
+import CryptoJS from "crypto-js";
 
 const ENDPOINT = "http://localhost:8080";
 let socket, selectedChatCompare;
@@ -47,6 +48,22 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     },
   };
 
+  // Function to encrypt a message
+  const encryptMessage = (message) => {
+    const encryptedMessage = CryptoJS.AES.encrypt(
+      message,
+      import.meta.env.VITE_SECRET_KEY
+    ).toString();
+    return encryptedMessage;
+  };
+
+  // Function to decrypt a message
+  const decryptMessage = (encryptedMessage) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedMessage, import.meta.env.VITE_SECRET_KEY);
+    const decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
+    return decryptedMessage;
+  };
+
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
@@ -63,7 +80,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         `http://localhost:8080/api/message/${selectedChat._id}`,
         config
       );
-      setMessages(data);
+
+      // decrypting the messages before setting them
+      const decryptedMessages = data.map((message) => ({
+        ...message,
+        content: decryptMessage(message.content), // decrypt the message
+      }));
+
+      setMessages(decryptedMessages);
       setLoading(false);
       setShowAllMessages(selectedChat.toggleState);
 
@@ -81,16 +105,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       return;
     }
 
-    // console.log(user._id);
-
-    // for(let i=0; i<selectedChat.members.length; i++){
-    //   console.log(selectedChat.members[i].user === user._id);
-    // }
-
     const memberJoinTimestamp = selectedChat.members.find(
       (member) => member.user === user._id
     )?.added;
-    // console.log(memberJoinTimestamp);
 
     const filtered = messages.filter(
       (message) => new Date(message.createdAt) >= new Date(memberJoinTimestamp)
@@ -131,18 +148,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             Authorization: `Bearer ${user.token}`,
           },
         };
+
+        // encrypting the message before sending it
+        const encryptedMessage = encryptMessage(newMessage);
+
         setNewMessage("");
 
-        const { data } = await axios.post(
+        let { data } = await axios.post(
           "http://localhost:8080/api/message",
           {
-            content: newMessage,
+            content: encryptedMessage,
             chatId: selectedChat,
           },
           config
         );
 
         socket.emit("new message", data);
+        data.content = decryptMessage(data.content);
         setMessages((prevMessages) => [...prevMessages, data]);
       } catch (error) {
         console.error("Error sending message", error);
@@ -203,7 +225,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
-    console.log(selectedChat);
+    // console.log(selectedChat);
 
     return () => {
       selectedChatCompare = null;
@@ -211,20 +233,34 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat]);
 
   useEffect(() => {
-    socket.on("message recieved", (newMessageRecieved) => {
+    const handleNewMessage = (newMessageRecieved) => {
+      console.log(newMessageRecieved);
+
       if (
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
-        if (!notification.includes(newMessageRecieved)) {
+        if (
+          !notification.some((notif) => notif._id === newMessageRecieved._id)
+        ) {
           setNotification([newMessageRecieved, ...notification]);
           setFetchAgain(!fetchAgain);
         }
       } else {
-        setMessages([...messages, newMessageRecieved]);
+        // decrypt the received message
+        const decryptedContent = decryptMessage(newMessageRecieved.content);
+        newMessageRecieved.content = decryptedContent || "Decryption failed";
+        setMessages((prevMessages) => [...prevMessages, newMessageRecieved]);
       }
-    });
-  });
+    };
+
+    socket.on("message recieved", handleNewMessage);
+
+    return () => {
+      // Clean up the listener when the component unmounts or dependencies change
+      socket.off("message recieved", handleNewMessage);
+    };
+  }, [notification, fetchAgain, selectedChatCompare, messages]);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -280,11 +316,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   <span
                     style={{
                       marginLeft: "10px",
-                      color: getPeerStatus(getPeerId(selectedChat, user)) ? "green" : "red",
+                      color: getPeerStatus(getPeerId(selectedChat, user))
+                        ? "green"
+                        : "red",
                       fontSize: "0.9rem",
                     }}
                   >
-                    {getPeerStatus(getPeerId(selectedChat, user)) ? "Online" : "Offline"}
+                    {getPeerStatus(getPeerId(selectedChat, user))
+                      ? "Online"
+                      : "Offline"}
                   </span>
                   <ProfileModal
                     user={getSenderFull(user, selectedChat.users)}

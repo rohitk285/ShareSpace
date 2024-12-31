@@ -41,11 +41,6 @@ const Login = () => {
     setLoading(false);
   };
 
-  const guestLogin = () => {
-    setEmail("guest@example.com");
-    setPassword("123456");
-  };
-
   useEffect(() => {
     const fetchGoogleUserData = async () => {
       const queryParams = new URLSearchParams(window.location.search);
@@ -126,14 +121,6 @@ const Login = () => {
           }`}
         >
           {loading ? "Loading..." : "Log In"}
-        </button>
-
-        {/* Guest Login */}
-        <button
-          onClick={guestLogin}
-          className="w-full mt-3 bg-gray-200 text-gray-700 py-2 rounded-md font-medium hover:bg-gray-300 transition"
-        >
-          Use Guest Credentials
         </button>
 
         {/* Google Login */}
