@@ -27,14 +27,6 @@ const Chatpage = () => {
             item
             xs={12}
             md={3}
-            sx={{
-              display: { xs: "none", md: "block" },
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              height: "100%",
-              padding: "10px",
-            }}
           >
             {user && <MyChats fetchAgain={fetchAgain} />}
           </Grid>
@@ -42,13 +34,6 @@ const Chatpage = () => {
             item
             xs={12}
             md={9}
-            sx={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              height: "100%",
-              padding: "10px",
-            }}
           >
             {user && (
               <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />

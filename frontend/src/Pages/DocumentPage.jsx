@@ -239,7 +239,7 @@ const DocumentPage = () => {
       {user && <SideDrawer />}
       <div className="p-6">
         <div className="container mx-auto flex justify-between items-center mb-8">
-          <h2 className="font-semibold text-xl">Documents created by you:</h2>
+          <h2 className="font-bold text-xl" style={{fontFamily: "Open Sans"}}>Documents created by you:</h2>
           <Button
             variant="contained"
             color="primary"
@@ -275,13 +275,13 @@ const DocumentPage = () => {
                     sx={{ boxShadow: 2 }}
                   >
                     <div className="mb-2">
-                      <h1 className="font-medium text-base truncate">
+                      <h1 className="font-bold text-base truncate" style={{fontFamily: "Mulish"}}>
                         {doc.documentName}
                       </h1>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-gray-300">
                         Created on: {formattedDate}
                       </p>
-                      <p className="text-xs text-gray-500">ID: {doc._id}</p>
+                      <p className="text-xs text-gray-300 font-semibold">ID: {doc._id}</p>
                     </div>
                     <div className="flex justify-between">
                       <Button
@@ -346,7 +346,7 @@ const DocumentPage = () => {
         </Grid>
 
         <div className="mt-8">
-          <h2 className="font-semibold text-xl mb-4">
+          <h2 className="font-bold text-xl mb-4" style={{fontFamily: "Open Sans"}}>
             Documents you are collaborating on:
           </h2>
           <Grid container spacing={2}>
@@ -377,13 +377,13 @@ const DocumentPage = () => {
                       onClick={() => openDocument(doc._id)}
                     >
                       <div className="mb-2">
-                        <h1 className="font-medium text-base truncate">
+                        <h1 className="font-bold text-base truncate" style={{fontFamily:'Mulish'}}>
                           {doc.documentName}
                         </h1>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-gray-300">
                           Created on: {formattedDate}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-300">
                           Created by: {doc.creator.email}
                         </p>
                         <p className="text-xs text-gray-500">ID: {doc._id}</p>

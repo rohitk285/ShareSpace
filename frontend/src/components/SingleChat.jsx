@@ -59,7 +59,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   // Function to decrypt a message
   const decryptMessage = (encryptedMessage) => {
-    const bytes = CryptoJS.AES.decrypt(encryptedMessage, import.meta.env.VITE_SECRET_KEY);
+    const bytes = CryptoJS.AES.decrypt(
+      encryptedMessage,
+      import.meta.env.VITE_SECRET_KEY
+    );
     const decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
     return decryptedMessage;
   };
@@ -234,20 +237,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     const handleNewMessage = (newMessageRecieved) => {
-      console.log(newMessageRecieved);
-
       if (
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
-        if (
-          !notification.some((notif) => notif._id === newMessageRecieved._id)
-        ) {
-          setNotification([newMessageRecieved, ...notification]);
-          setFetchAgain(!fetchAgain);
-        }
+        setNotification((prevNotifications) => {
+          if (
+            !prevNotifications.some(
+              (notif) => notif._id === newMessageRecieved._id
+            )
+          ) {
+            return [newMessageRecieved, ...prevNotifications];
+          }
+          return prevNotifications;
+        });
+        setFetchAgain((prev) => !prev);
       } else {
-        // decrypt the received message
+        // Decrypt the received message
         const decryptedContent = decryptMessage(newMessageRecieved.content);
         newMessageRecieved.content = decryptedContent || "Decryption failed";
         setMessages((prevMessages) => [...prevMessages, newMessageRecieved]);
@@ -260,7 +266,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       // Clean up the listener when the component unmounts or dependencies change
       socket.off("message recieved", handleNewMessage);
     };
-  }, [notification, fetchAgain, selectedChatCompare, messages]);
+  }, [selectedChatCompare, setFetchAgain, decryptMessage, setMessages]);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -298,57 +304,84 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               pb: 3,
               px: 2,
               width: "100%",
-              fontFamily: "Work sans",
+              fontFamily: "Oswald",
               display: "flex",
-              justifyContent: { base: "space-between" },
+              justifyContent: "space-between",
               alignItems: "center",
             }}
           >
             <IconButton
               sx={{ display: { base: "flex", md: "none" } }}
-              icon={<ArrowBack />}
               onClick={() => setSelectedChat("")}
-            />
-            {filteredMessages &&
-              (!selectedChat.isGroupChat ? (
-                <>
-                  {getSender(user, selectedChat.users)}
-                  <span
-                    style={{
-                      marginLeft: "10px",
-                      color: getPeerStatus(getPeerId(selectedChat, user))
-                        ? "green"
-                        : "red",
-                      fontSize: "0.9rem",
-                    }}
-                  >
-                    {getPeerStatus(getPeerId(selectedChat, user))
-                      ? "Online"
-                      : "Offline"}
-                  </span>
-                  <ProfileModal
-                    user={getSenderFull(user, selectedChat.users)}
-                  />
-                </>
-              ) : (
-                <>
-                  {selectedChat.chatName}
+            >
+              <ArrowBack />
+            </IconButton>
+
+            {filteredMessages && selectedChat.isGroupChat ? (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%"
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {selectedChat.chatName}
+                    {selectedChat.groupAdmin._id === user._id && (
+                      <UpdateGroupChatModal
+                        fetchMessages={fetchMessages}
+                        fetchAgain={fetchAgain}
+                        setFetchAgain={setFetchAgain}
+                        sx={{ ml: 2 }}
+                      />
+                    )}
+                  </Box>
                   {selectedChat.groupAdmin._id === user._id && (
                     <Switch
                       checked={showAllMessages}
                       onChange={(e) => chatHistoryToggle(e.target.checked)}
                       color="primary"
-                      sx={{ ml: 2 }}
                     />
                   )}
-                  <UpdateGroupChatModal
-                    fetchMessages={fetchMessages}
-                    fetchAgain={fetchAgain}
-                    setFetchAgain={setFetchAgain}
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center"}}>
+                    {getSender(user, selectedChat.users)}
+                    <span
+                      style={{
+                        marginLeft: "10px",
+                        color: getPeerStatus(getPeerId(selectedChat, user))
+                          ? "green"
+                          : "red",
+                        fontSize: "0.9rem",
+                        fontFamily: "Nunito"
+                      }}
+                    >
+                      {getPeerStatus(getPeerId(selectedChat, user))
+                        ? "Online"
+                        : "Offline"}
+                    </span>
+                  </Box>
+                  <ProfileModal
+                    user={getSenderFull(user, selectedChat.users)}
                   />
-                </>
-              ))}
+                </Box>
+              </>
+            )}
           </Typography>
+
           <Box
             sx={{
               display: "flex",
@@ -400,7 +433,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 </IconButton>
                 {showEmojiPicker && (
                   <Box
-                    sx={{ position: "absolute", bottom: "60px", zIndex: 10 }}
+                    sx={{
+                      position: "absolute",
+                      bottom: "60px",
+                      zIndex: 10,
+                    }}
                   >
                     <EmojiPicker onEmojiClick={onEmojiClick} />
                   </Box>

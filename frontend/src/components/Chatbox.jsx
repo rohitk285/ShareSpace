@@ -1,9 +1,9 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 import SingleChat from "./SingleChat";
-import io from "socket.io-client";  // Import socket.io-client
+import io from "socket.io-client"; // Import socket.io-client
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat, user } = ChatState();
@@ -40,7 +40,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     // Initialize socket connection
     socket.current = io("http://localhost:8080", {
-      withCredentials: true,  // Use cookies for authentication if necessary
+      withCredentials: true, // Use cookies for authentication if necessary
     });
 
     // Cleanup socket connection on unmount
@@ -137,7 +137,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       peerConnection.close();
     }
     setPeerConnection(null);
-    localStream.getTracks().forEach(track => track.stop());
+    localStream.getTracks().forEach((track) => track.stop());
     setLocalStream(null);
     setRemoteStream(null);
     setIsCalling(false);
@@ -149,37 +149,41 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
         display: selectedChat ? "flex" : "none",
         flexDirection: "column",
         alignItems: "center",
-        padding: 3,
+        padding: 2,
         backgroundColor: "#fff",
         width: "100%",
         height: "100%",
+        minHeight: "640px",
+        maxHeight: "640px",
+        marginTop: "4px",
         borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
       }}
     >
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
           width: "100%",
           mb: 2,
         }}
       >
-        {!isCalling && (
+        {!isCalling ? (
           <Button
             variant="contained"
             color="primary"
             onClick={() => initiateCall(selectedChat.user._id)}
+            sx={{ fontSize: "0.85rem" }}
           >
             Video Call
           </Button>
-        )}
-
-        {isCalling && (
+        ) : (
           <Button
             variant="contained"
             color="secondary"
             onClick={endCall}
+            sx={{ fontSize: "0.85rem" }}
           >
             End Call
           </Button>
@@ -193,10 +197,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
           autoPlay
           muted
           style={{
-            width: "200px",
-            height: "150px",
+            width: "180px",
+            height: "140px",
             borderRadius: "8px",
-            marginBottom: "20px",
+            marginBottom: "15px",
           }}
         />
       )}
@@ -207,10 +211,10 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
           ref={remoteVideoRef}
           autoPlay
           style={{
-            width: "400px",
-            height: "300px",
+            width: "360px",
+            height: "270px",
             borderRadius: "8px",
-            marginBottom: "20px",
+            marginBottom: "15px",
           }}
         />
       )}

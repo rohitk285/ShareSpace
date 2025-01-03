@@ -56,15 +56,21 @@ const MyChats = ({ fetchAgain }) => {
           if (obj.latestMessage && obj.latestMessage.content) {
             try {
               // Decrypt the content if it exists
-              obj.latestMessage.content = decryptMessage(obj.latestMessage.content);
+              obj.latestMessage.content = decryptMessage(
+                obj.latestMessage.content
+              );
             } catch (decryptionError) {
-              console.error("Decryption failed for message:", obj.latestMessage.content, decryptionError);
+              console.error(
+                "Decryption failed for message:",
+                obj.latestMessage.content,
+                decryptionError
+              );
               obj.latestMessage.content = "Error decrypting message.";
             }
           }
           return obj; // Return the updated object
         });
-        
+
         setChats(decryptedChats);
       } else {
         console.error("Error: API returned non-array data", data);
@@ -139,13 +145,25 @@ const MyChats = ({ fetchAgain }) => {
 
   return (
     <>
-      <Box className="flex flex-col p-4 bg-white w-full rounded-lg">
+      <Box
+        className="flex flex-col p-4 bg-white w-full rounded-lg"
+        sx={{
+          marginTop: "4px",
+          height: "100%",
+          minHeight: "640px",
+          maxHeight: "640px",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
         {/* Header */}
         <Box
           className="flex justify-between items-center pb-4 px-3 font-semibold text-xl"
-          sx={{ borderBottom: "1px solid #e0e0e0", marginBottom: "10px" }}
+          sx={{
+            borderBottom: "1px solid #e0e0e0",
+            marginBottom: "10px",
+          }}
         >
-          <Typography variant="h6">Chats</Typography>
+          <Typography variant="h4" sx={{fontFamily: "Oswald"}}>Chats</Typography>
           <GroupChatModal>
             <Button
               variant="contained"
@@ -164,7 +182,7 @@ const MyChats = ({ fetchAgain }) => {
           variant="text"
           onClick={() => setOpenDrawer(true)}
           className="flex items-center"
-          sx={{ justifyContent: "flex-start" }}
+          sx={{ justifyContent: "flex-start", marginBottom: "10px" }}
         >
           <SearchIcon fontSize="small" />
           <span className="ml-2 hidden md:inline">Search User</span>
@@ -196,7 +214,7 @@ const MyChats = ({ fetchAgain }) => {
                     },
                   }}
                 >
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold", fontFamily: "Open Sans" }}>
                     {!chat.isGroupChat
                       ? getSender(loggedUser, chat.users)
                       : chat.chatName}
@@ -204,7 +222,8 @@ const MyChats = ({ fetchAgain }) => {
                   {chat.latestMessage && (
                     <Typography
                       variant="body2"
-                      className="text-xs text-gray-500"
+                      className="text-sm text-gray-500"
+                      sx={{fontFamily: "Mulish", fontWeight: "bold"}}
                     >
                       <b>{chat.latestMessage.sender.name}: </b>
                       {chat.latestMessage.content.length > 50

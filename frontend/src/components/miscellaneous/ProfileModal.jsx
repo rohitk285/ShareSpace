@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, Box, Typography, IconButton, Button } from "@mui/material";
-import { Visibility as ViewIcon } from "@mui/icons-material";
+import Person from "@mui/icons-material/Person";
 
 const ProfileModal = ({ user, children }) => {
   const [open, setOpen] = useState(false);
@@ -14,7 +14,7 @@ const ProfileModal = ({ user, children }) => {
         <span onClick={handleOpen}>{children}</span>
       ) : (
         <IconButton onClick={handleOpen}>
-          <ViewIcon />
+          <Person />
         </IconButton>
       )}
 

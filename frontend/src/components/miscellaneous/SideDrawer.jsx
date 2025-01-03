@@ -51,12 +51,14 @@ function SideDrawer() {
   return (
     <>
       <Box
-        className="flex justify-between items-center bg-white p-4 border-b-4 border-gray-200 w-full"
+        className="flex justify-between items-center bg-white p-6 border-b-4 border-gray-200 w-full"
         style={{ height: "60px", width: "100%" }}
       >
-        <h1 className="text-2xl font-sans">ShareSpace</h1>
+        <h1 className="text-4xl" style={{
+          fontFamily: "Bebas Neue"
+        }}>ShareSpace</h1>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-5">
           {/* Styled Buttons */}
           <Button
             onClick={() => navigate("/chats")}
@@ -66,6 +68,9 @@ function SideDrawer() {
               boxShadow: "none",
               position: "relative",
               color: "inherit",
+              fontFamily:"Nunito",
+              fontWeight: "bold",
+              fontSize: "16px"
             }}
           >
             Chats
@@ -79,6 +84,9 @@ function SideDrawer() {
               boxShadow: "none",
               position: "relative",
               color: "inherit",
+              fontFamily:"Nunito",
+              fontWeight: "bold",
+              fontSize: "16px"
             }}
           >
             Documents
@@ -92,6 +100,9 @@ function SideDrawer() {
               boxShadow: "none",
               position: "relative",
               color: "inherit",
+              fontFamily:"Nunito",
+              fontWeight: "bold",
+              fontSize: "16px"
             }}
           >
             Files

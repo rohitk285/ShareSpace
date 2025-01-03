@@ -21,6 +21,7 @@ Google OAuth.
 - Node.js (v14 or higher)
 - MongoDB (Compass or Atlas)
 - Google Cloud Console account - Google Drive API (for file uploads)
+- Docker Desktop (if using Docker to run code)
 
 ### Setup
 
@@ -59,26 +60,38 @@ Google OAuth.
    ```
 
 5. **Run the Application**
-   - Start the server:
-     ```bash
-     cd backend
-     node server
-     ```
-   - Start the client:
-     ```bash
-     cd frontend
-     npm run dev
-     ```
+   1. **With Docker Desktop**
+      - Build the Docker image and run the container:
+      ```bash
+      docker-compose up --build -d
+      ```
 
-## Usage
+      - Then open http://localhost:5173/ to see the locally run application
+   
+   2. **Without Docker Desktop**
+      - Start the server:
+      ```bash
+      cd backend
+      node server
+      ```
+      - Start the client:
+      ```bash
+      cd frontend
+      npm run dev
+      ```
 
-1. Navigate to `http://localhost:3000` to access the application.
-2. Users can chat with their peers or create a group chat. (socket.io)
-3. Users can see whether other users are offline or online
-4. Admins can decide whether newer members can see chat history.
-5. User can create a collaborative and simultaneously edit the document in real-time (socket.io)
-6. Users can share files with their peers.
-7. Normal SSO Authentication and Google Auth2.0 has been implemented
+## Features implemented
+
+1. User Authentication system with JWT (Level 1).
+2. Real Time Chat System with web sockets (Level 1).
+3. File Storage and Sharing (Level 1).
+4. Collaborative Document Editing (Level 1).
+5. OAuth/ SSO integration (Level 1).
+6. Video Conferencing using webRTC (Level 2).
+7. Containerization using Docker Desktop (Level 2).
+8. Load Balancing and proxying using Nginx (Level 2).
+9. Notification system using web sockets (Level 2).
+10. End-to-End Encryption for chat messages using crypto.js (Level 3).
 
 ## API Endpoints
 
@@ -88,13 +101,20 @@ Google OAuth.
 
 This project is for Lateral Inductions of Spider R&D.
 
-## Tech Stack
+## Tech Stack Used
 
 1. MongoDB Atlas
 2. ExpressJS
 3. ReactJS
 4. NodeJS
 5. TailwindCSS
-6. Google Drive API
-7. Socket.io
-8. JWT and Google Auth 2.0 (Authentication)
+6. Docker Desktop
+7. Nginx
+8. APIs used :
+   - Google Drive API (For file storage)
+   - Google Auth 2.0 (For Google Sign In)
+9. Libraries used:
+   - Socket.io
+   - bcryptjs (For hashing)
+   - crypto.js (For encryption)
+   - jsonwebtoken (For JWT based Authentication)
