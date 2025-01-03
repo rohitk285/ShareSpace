@@ -92,6 +92,7 @@ Google OAuth.
 8. Load Balancing and proxying using Nginx (Level 2).
 9. Notification system using web sockets (Level 2).
 10. End-to-End Encryption for chat messages using crypto.js (Level 3).
+11. User Presence indicator - whether user is online/offline (Additional feature).
 
 ## API Endpoints
 
