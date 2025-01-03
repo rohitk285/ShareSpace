@@ -14,7 +14,7 @@ Google OAuth.
 - [Usage](#usage)
 - [Features](#features-implemented)
 - [Purpose](#purpose)
-- [Tech Stack](#tech-stack)
+- [Tech Stack](#tech-stack-used)
 
 ### Prerequisites
 
