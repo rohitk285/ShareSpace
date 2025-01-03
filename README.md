@@ -100,7 +100,7 @@ Google OAuth.
 
 ## Purpose
 
-This project is for Lateral Inductions of Spider R&D.
+- This project is for Lateral Inductions of Spider R&D.
 
 ## Tech Stack Used
 
