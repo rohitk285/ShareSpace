@@ -123,5 +123,5 @@ Google OAuth.
    - jsonwebtoken (For JWT based Authentication)
 
 ## Known issues
-   - The chats don't get rendered properly on opening.
+   - Sometimes, there is a bit of lag when rendering the chats.
    - Video call request is not being sent properly over web-sockets and webRTC is causing some issues.
