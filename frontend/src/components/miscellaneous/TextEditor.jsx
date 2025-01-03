@@ -31,6 +31,7 @@ function TextEditor() {
   const [documentExists, setDocumentExists] = useState(true); // State for checking if document exists
   const [hasAccess, setHasAccess] = useState(false); // State to track access
   const [loading, setLoading] = useState(true); // Track loading state
+  const [accessLevel, setAccessLevel] = useState(""); // Track user's access level
 
   // Access validation (creator or collaborator check)
   useEffect(() => {
@@ -47,18 +48,27 @@ function TextEditor() {
           { docId: documentId },
           config
         );
+        
+        const collab = data.collaborators.find(
+          (collaborator) => collaborator.user._id === user._id
+        );
 
-        const collab = data.collaborators.map(collaborator => collaborator._id);
-        if (data.documentType === 'public' || (data && (data.creator === user._id || collab.includes(user._id)))) {
-          setHasAccess(true); // Grant access if user is creator or collaborator
+        if (
+          data.documentType === "public" ||
+          data.creator === user._id ||
+          collab
+        ) {
+          setHasAccess(true); // grant access if user is creator or collaborator
+          setAccessLevel(collab?.access || "edit"); // set access level (default "edit" for creator)
+          console.log(accessLevel);
         } else {
-          setHasAccess(false); // Deny access if user is not creator or collaborator
+          setHasAccess(false); // deny access if user is not creator or collaborator
         }
       } catch (err) {
         console.error("Access validation failed:", err);
-        setHasAccess(false); // Deny access on error
+        setHasAccess(false); // deny access on error
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false); // stop loading
       }
     };
 
@@ -84,36 +94,42 @@ function TextEditor() {
     socket.once("load-document", (document) => {
       if (document) {
         quill.setContents(document.data);
-        quill.enable(); // Enable the text editor
+
+        // Enable or disable the editor based on access level
+        if (accessLevel === "view") {
+          quill.disable();
+        } else {
+          quill.enable();
+        }
       } else {
         setDocumentExists(false); // Set documentExists to false if document is not found
       }
     });
 
     socket.emit("get-document", documentId, user);
-  }, [socket, quill, documentId, user]);
+  }, [socket, quill, documentId, user, accessLevel]);
 
   // Save document content periodically
   useEffect(() => {
-    if (socket === null || quill === null) return;
+    if (socket === null || quill === null || accessLevel === "view") return;
 
     const intervalID = setInterval(() => {
       socket.emit("save-document", quill.getContents(), documentId);
     }, saveInterval);
 
     return () => clearInterval(intervalID);
-  }, [socket, quill, documentId]);
+  }, [socket, quill, documentId, accessLevel]);
 
   // Version control save every 15 minutes
   useEffect(() => {
-    if (socket === null || quill === null) return;
+    if (socket === null || quill === null || accessLevel === "view") return;
 
     const versionIntervalID = setInterval(() => {
       socket.emit("version-control", quill.getContents());
     }, 15 * 60 * 1000);
 
     return () => clearInterval(versionIntervalID);
-  }, [socket, quill]);
+  }, [socket, quill, accessLevel]);
 
   // Handle real-time updates
   useEffect(() => {
@@ -130,7 +146,7 @@ function TextEditor() {
 
   // Emit changes to other clients
   useEffect(() => {
-    if (socket === null || quill === null) return;
+    if (socket === null || quill === null || accessLevel === "view") return;
 
     const handleText = (delta, oldDelta, source) => {
       if (source !== "user") return;
@@ -140,7 +156,7 @@ function TextEditor() {
     quill.on("text-change", handleText);
 
     return () => quill.off("text-change", handleText);
-  }, [socket, quill]);
+  }, [socket, quill, accessLevel]);
 
   // Initialize Quill editor
   const wrapperRef = useCallback((wrapper) => {

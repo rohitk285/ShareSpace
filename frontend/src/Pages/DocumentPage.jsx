@@ -96,7 +96,7 @@ const DocumentPage = () => {
         { docId },
         config
       );
-      console.log(data);
+
       setDocCreator(data.creator);
       setCollaborators(data.collaborators);
       setSelectedDocumentId(docId);
@@ -150,11 +150,18 @@ const DocumentPage = () => {
     try {
       if (documentName.trim() !== "") {
         const newDocumentId = uuidV4();
+
+        // Transform collaborators array to include access level
+        const transformedCollaborators = collaborators.map((userId) => ({
+          user: userId,
+          access: "view",
+        }));
+
         const documentData = {
           _id: newDocumentId,
           documentName: documentName,
           creator: user._id,
-          collaborators: documentType === "private" ? collaborators : [],
+          collaborators: documentType === "private" ? transformedCollaborators : [],
           documentType: documentType,
         };
         const config = {
@@ -209,7 +216,9 @@ const DocumentPage = () => {
         { docId },
         config
       );
-      const collab = data.collaborators.map((collaborator) => collaborator._id);
+      const collab = data.collaborators.map(
+        (collaborator) => collaborator.user._id
+      );
       return data &&
         (data.documentType === "public" ||
           (data && (data.creator === user._id || collab.includes(user._id))))
@@ -239,7 +248,9 @@ const DocumentPage = () => {
       {user && <SideDrawer />}
       <div className="p-6">
         <div className="container mx-auto flex justify-between items-center mb-8">
-          <h2 className="font-bold text-xl" style={{fontFamily: "Open Sans"}}>Documents created by you:</h2>
+          <h2 className="font-bold text-xl" style={{ fontFamily: "Open Sans" }}>
+            Documents created by you:
+          </h2>
           <Button
             variant="contained"
             color="primary"
@@ -275,13 +286,18 @@ const DocumentPage = () => {
                     sx={{ boxShadow: 2 }}
                   >
                     <div className="mb-2">
-                      <h1 className="font-bold text-base truncate" style={{fontFamily: "Mulish"}}>
+                      <h1
+                        className="font-bold text-base truncate"
+                        style={{ fontFamily: "Mulish" }}
+                      >
                         {doc.documentName}
                       </h1>
                       <p className="text-xs text-gray-300">
                         Created on: {formattedDate}
                       </p>
-                      <p className="text-xs text-gray-300 font-semibold">ID: {doc._id}</p>
+                      <p className="text-xs text-gray-300 font-semibold">
+                        ID: {doc._id}
+                      </p>
                     </div>
                     <div className="flex justify-between">
                       <Button
@@ -346,7 +362,10 @@ const DocumentPage = () => {
         </Grid>
 
         <div className="mt-8">
-          <h2 className="font-bold text-xl mb-4" style={{fontFamily: "Open Sans"}}>
+          <h2
+            className="font-bold text-xl mb-4"
+            style={{ fontFamily: "Open Sans" }}
+          >
             Documents you are collaborating on:
           </h2>
           <Grid container spacing={2}>
@@ -377,7 +396,10 @@ const DocumentPage = () => {
                       onClick={() => openDocument(doc._id)}
                     >
                       <div className="mb-2">
-                        <h1 className="font-bold text-base truncate" style={{fontFamily:'Mulish'}}>
+                        <h1
+                          className="font-bold text-base truncate"
+                          style={{ fontFamily: "Mulish" }}
+                        >
                           {doc.documentName}
                         </h1>
                         <p className="text-xs text-gray-300">

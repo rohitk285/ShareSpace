@@ -12,7 +12,7 @@ const CollaboratorsModal = ({
 }) => {
   const [searchResults, setSearchResults] = useState([]);
 
-  // Add collaborator handler
+  // Add collaborator handler with default access as "view"
   const handleAddCollaborator = async (userId, email) => {
     try {
       const config = {
@@ -21,13 +21,13 @@ const CollaboratorsModal = ({
 
       await axios.post(
         "http://localhost:8080/api/document/addCollaborator",
-        { docId: documentId, userId: userId },
+        { docId: documentId, userId, access: "view" }, // Default access is view
         config
       );
 
       setCollaborators((prevCollaborators) => [
         ...prevCollaborators,
-        { _id: userId, email: email },
+        { _id: userId, email, access: "view" },
       ]);
 
       setSearchResults((prevResults) =>
@@ -47,7 +47,7 @@ const CollaboratorsModal = ({
 
       await axios.post(
         "http://localhost:8080/api/document/removeCollaborator",
-        { docId: documentId, collaboratorId: collaboratorId },
+        { docId: documentId, collaboratorId },
         config
       );
 
@@ -58,6 +58,32 @@ const CollaboratorsModal = ({
       );
     } catch (err) {
       console.error("Error removing collaborator:", err);
+    }
+  };
+
+  // Update collaborator access handler
+  const handleUpdateAccess = async (collaboratorId, newAccess) => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` },
+      };
+      console.log(newAccess);
+
+      await axios.post(
+        "http://localhost:8080/api/document/updateCollaboratorAccess",
+        { docId: documentId, collaboratorId, access: newAccess },
+        config
+      );
+
+      setCollaborators((prevCollaborators) =>
+        prevCollaborators.map((collaborator) =>
+          collaborator._id === collaboratorId
+            ? { ...collaborator, access: newAccess }
+            : collaborator
+        )
+      );
+    } catch (err) {
+      console.error("Error updating collaborator access:", err);
     }
   };
 
@@ -101,20 +127,34 @@ const CollaboratorsModal = ({
                 key={collaborator._id}
                 className="flex justify-between items-center mb-2 border-b pb-2"
               >
-                <span>{collaborator.email}</span>
-                {user._id == docCreator && (
-                  <button
-                    onClick={() => handleRemoveCollaborator(collaborator._id)}
-                    className="text-red-500 text-sm font-medium"
-                  >
-                    Remove
-                  </button>
+                <div>
+                  <span>{collaborator.user.email}</span>
+                </div>
+                {user._id === docCreator && (
+                  <div className="flex items-center">
+                    <select
+                      value={collaborator.access}
+                      onChange={(e) =>
+                        handleUpdateAccess(collaborator.user, e.target.value)
+                      }
+                      className="border border-gray-300 rounded text-sm px-2 py-1 mr-2"
+                    >
+                      <option value="view">View Only</option>
+                      <option value="edit">Editor</option>
+                    </select>
+                    <button
+                      onClick={() => handleRemoveCollaborator(collaborator._id)}
+                      className="text-red-500 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 )}
               </li>
             ))
           )}
         </ul>
-        {user._id == docCreator && (
+        {user._id === docCreator && (
           <div className="flex items-center mb-4">
             <input
               type="email"
