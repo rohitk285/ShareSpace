@@ -9,10 +9,10 @@ efficient user interaction. Implemented a secure authentication system using JWT
 Google OAuth. 
 
 ## Table of Contents
-
+- [Prerequisites](#prerequisites)
 - [Setup](#setup)
 - [Usage](#usage)
-- [API Endpoints](#api-endpoints)
+- [Features](#features-implemented)
 - [Purpose](#purpose)
 - [Tech Stack](#tech-stack)
 
