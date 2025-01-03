@@ -119,3 +119,7 @@ Google OAuth.
    - bcryptjs (For hashing)
    - crypto.js (For encryption)
    - jsonwebtoken (For JWT based Authentication)
+
+## Known issues
+   - The chats don't get rendered properly on opening.
+   - Video call request is not being sent properly over web-sockets and webRTC is causing some issues.
