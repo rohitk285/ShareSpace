@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Login from "../components/Authentication/Login";
 import Signup from "../components/Authentication/Signup";
-import { Tab, Tabs, Box, Typography, Paper } from "@mui/material"; // Import Tab and Tabs from @mui/material
+import { Tab, Tabs, Box, Typography, Paper } from "@mui/material";
 import { useState } from "react";
 
 const TabPanel = (props) => {
@@ -34,22 +34,22 @@ function Homepage() {
   };
 
   return (
-    <div className="flex flex-col items-center w-full h-full">
+    <div className="flex flex-col items-center justify-center w-full h-screen bg-blue-50">
       <Paper
         elevation={3}
-        className="flex justify-center p-4 bg-white w-full max-w-xl mt-10 rounded-lg border"
+        className="flex justify-center p-6 bg-white w-full max-w-md mt-10 rounded-lg shadow-md"
       >
         <Typography
-          variant="h3"
-          className="font-sans text-center"
-          style={{ fontFamily: "Work Sans" }}
+          variant="h2"
+          className="font-sans text-center text-gray-800"
+          style={{ fontFamily: "Bebas Neue" }}
         >
           ShareSpace
         </Typography>
       </Paper>
       <Paper
         elevation={3}
-        className="bg-white w-full max-w-xl mt-6 p-6 rounded-lg border"
+        className="bg-white w-full max-w-md mt-6 p-6 rounded-lg shadow-md"
       >
         <Tabs
           value={activeTab}

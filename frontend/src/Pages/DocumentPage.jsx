@@ -161,7 +161,8 @@ const DocumentPage = () => {
           _id: newDocumentId,
           documentName: documentName,
           creator: user._id,
-          collaborators: documentType === "private" ? transformedCollaborators : [],
+          collaborators:
+            documentType === "private" ? transformedCollaborators : [],
           documentType: documentType,
         };
         const config = {
@@ -263,7 +264,7 @@ const DocumentPage = () => {
 
         <Grid container spacing={2}>
           {docs.length === 0 ? (
-            <p className="text-gray-500">No documents created yet.</p>
+            <p className="text-gray-500 mt-4">No documents created yet.</p>
           ) : (
             docs.map((doc, index) => {
               const formattedDate = new Date(doc.createdAt).toLocaleString(
@@ -361,7 +362,7 @@ const DocumentPage = () => {
           )}
         </Grid>
 
-        <div className="mt-8">
+        <div className="mt-10">
           <h2
             className="font-bold text-xl mb-4"
             style={{ fontFamily: "Open Sans" }}
@@ -370,7 +371,7 @@ const DocumentPage = () => {
           </h2>
           <Grid container spacing={2}>
             {docsCollab.length === 0 ? (
-              <p className="text-gray-500">
+              <p className="text-gray-500 mt-8">
                 You are not collaborating on any documents yet.
               </p>
             ) : (

@@ -14,7 +14,6 @@ const Login = () => {
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  // Handle login for email/password
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
@@ -29,7 +28,7 @@ const Login = () => {
         { email, password },
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true, // Ensure session cookie is sent with request
+          withCredentials: true,
         }
       );
       localStorage.setItem("userInfo", JSON.stringify(data));
@@ -45,20 +44,15 @@ const Login = () => {
     const fetchGoogleUserData = async () => {
       const queryParams = new URLSearchParams(window.location.search);
       const token = queryParams.get("token");
-  
+
       if (token) {
         try {
-          // Fetch user data from your backend using the token
           const { data } = await axios.get("http://localhost:8080/api/user/googleUser", {
             headers: {
-              Authorization: `Bearer ${token}`, // Pass the token if required for fetching user details
+              Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
-  
-          // Store user data in localStorage
           localStorage.setItem("userInfo", JSON.stringify(data));
-  
           toast.success("Google Login Successful!");
           navigate("/chats");
         } catch (error) {
@@ -66,70 +60,58 @@ const Login = () => {
         }
       }
     };
-  
-    fetchGoogleUserData();
-  }, [navigate]);  
 
-  // Initiate Google Login
+    fetchGoogleUserData();
+  }, [navigate]);
+
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:8080/auth/google";
   };
 
   return (
-    <div className="flex flex-col justify-center items-center bg-gray-100 p-10">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">Log In</h1>
-
-      <div className="w-full max-w-lg">
-        {/* Email Field */}
+    <div className="flex flex-col justify-center items-center p-6">
+      <div className="w-full max-w-md">
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Email Address</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter your email"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none"
+            placeholder="Email"
           />
         </div>
-
-        {/* Password Field */}
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Password</label>
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter your password"
-            />
-            <span
-              className="absolute top-2.5 right-3 cursor-pointer text-gray-500"
-              onClick={togglePasswordVisibility}
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </span>
-          </div>
+        <div className="mb-4 relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none"
+            placeholder="Password"
+          />
+          <span
+            className="absolute top-2 right-3 cursor-pointer"
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+          </span>
         </div>
-
-        {/* Login Button */}
         <button
           onClick={submitHandler}
           disabled={loading}
-          className={`w-full bg-blue-500 text-white py-2 rounded-md font-medium transition ${
-            loading ? "opacity-50" : "hover:bg-blue-600"
+          className={`w-full bg-black text-white py-2 rounded-md transition ${
+            loading ? "opacity-50" : "hover:bg-gray-800"
           }`}
         >
-          {loading ? "Loading..." : "Log In"}
+          {loading ? "Loading..." : "Login"}
         </button>
-
-        {/* Google Login */}
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full mt-3 bg-red-500 text-white py-2 rounded-md font-medium hover:bg-red-600 transition"
-        >
-          Continue with Google
-        </button>
+        <div className="flex justify-around mt-4">
+          <button
+            onClick={handleGoogleLogin}
+            className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 w-full"
+          >
+            Log in with Google
+          </button>
+        </div>
       </div>
     </div>
   );

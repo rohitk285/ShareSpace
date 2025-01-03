@@ -27,7 +27,7 @@ const allUsers = async (req, res) => {
 //route           POST /api/user/
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(name, email);
+  console.log(name, email, password);
   try {
     console.log("Registering user with email:", email); // Log for debugging
     if (!name || !email || !password) {
@@ -40,7 +40,6 @@ const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("Hashed password:", hashedPassword); // Log the hashed password for debugging
 
     const user = await User.create({
       name: name,
