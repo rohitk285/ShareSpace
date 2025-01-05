@@ -48,16 +48,22 @@ Google OAuth.
    ```
 
 4. **Environment Variables**
-   Create a `.env` file in the `server` folder and add the following variables:
+   - Create a `.env` file in the `backend` folder and add the following variables:
 
    ```env
    PORT=<your-port-number>
-   MONGODB_URI = <your_mongodb_uri>
+   MONGODB_URI =<your_mongodb_uri>
    JWT_SECRET=<your-jwt-secret>
    GOOGLE_CLIENT_ID=<your-google-client-id>
    GOOGLE_CLIENT_SECRET=<your-google-client-secret>
    SESSION_SECRET=<your-session-secret>
    SERVICE_ACCOUNT_FILE=<path-to-your-service-account-file>
+   ```
+
+   - Create a `.env` file in the `frontend` folder and add the following variable:
+
+   ```env
+   VITE_SECRET_KEY=<your-secret-key>
    ```
 
 5. **Run the Application**
@@ -67,7 +73,8 @@ Google OAuth.
       docker-compose up --build -d
       ```
 
-      - Then open http://localhost:5173/ to see the locally run application
+      - Then open http://localhost:5173/ to see the locally run application.
+      - Make sure Docker Desktop is downloaded and configured before running the above command.
    
    2. **Without Docker Desktop**
       - Start the server:
