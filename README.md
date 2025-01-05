@@ -2,11 +2,9 @@
 
 ## Overview
 
-ShareSpace is a full-stack multi-purpose web application featuring real-time peer-to-peer and group messaging, real-
-time collaborative document editing, and file storage, management, and sharing. Leveraged web 
-sockets to implement seamless real-time communication and collaborative functionality, enabling 
-efficient user interaction. Implemented a secure authentication system using JWT and integrated 
-Google OAuth. 
+ShareSpace is a comprehensive full-stack web application designed to facilitate real-time communication, collaboration, and file management. It features encrypted peer-to-peer and group messaging, real-time collaborative document editing, and robust file storage, management, and sharing capabilities. Leveraging WebSockets, the application ensures seamless real-time interactions, enhancing user experience and efficiency.
+
+To prioritize security, ShareSpace incorporates a robust authentication system with JWT and Google OAuth integration. The application has been containerized using Docker for consistent deployment and scalability. Additionally, load balancing is implemented across three servers using Nginx, ensuring efficient traffic management and optimal performance under high loads.
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -34,11 +32,11 @@ Google OAuth.
    ```
 
 2. **Server Setup**
-
    ```bash
    cd backend
    npm install
    ```
+   - If you are using Docker to run application, running the above command is not necessary.
 
 3. **Client Setup**
 
@@ -46,25 +44,29 @@ Google OAuth.
    cd frontend
    npm install
    ```
+   - If you are using Docker to run application, running the above command is not necessary.
 
 4. **Environment Variables**
-   - Create a `.env` file in the `backend` folder and add the following variables:
+   1. **Create a `.env` file in the `backend` folder and add the following variables:**
 
-   ```env
-   PORT=<your-port-number>
-   MONGODB_URI =<your_mongodb_uri>
-   JWT_SECRET=<your-jwt-secret>
-   GOOGLE_CLIENT_ID=<your-google-client-id>
-   GOOGLE_CLIENT_SECRET=<your-google-client-secret>
-   SESSION_SECRET=<your-session-secret>
-   SERVICE_ACCOUNT_FILE=<path-to-your-service-account-file>
-   ```
+      ```env
+      PORT=<your-port-number>
+      MONGODB_URI =<your_mongodb_uri>
+      JWT_SECRET=<your-jwt-secret>
+      GOOGLE_CLIENT_ID=<your-google-client-id>
+      GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+      SESSION_SECRET=<your-session-secret>
+      SERVICE_ACCOUNT_FILE=<path-to-your-service-account-file>
+      ```
 
-   - Create a `.env` file in the `frontend` folder and add the following variable:
+   2. **Create a `.env` file in the `frontend` folder and add the following variable:**
 
-   ```env
-   VITE_SECRET_KEY=<your-secret-key>
-   ```
+      ```env
+      VITE_SECRET_KEY=<your-secret-key>
+      ```
+
+      - VITE_SECRET_KEY is used for encryption using crypto.js.
+      - Use any complex string as your secret key (eg. VITE_SECRET_KEY=as23de55f21ef59yz32)
 
 5. **Run the Application**
    1. **With Docker Desktop**
