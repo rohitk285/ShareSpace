@@ -18,25 +18,30 @@ const CollaboratorsModal = ({
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-
+  
       await axios.post(
         "http://localhost:8080/api/document/addCollaborator",
         { docId: documentId, userId, access: "view" }, // Default access is view
         config
       );
-
+  
+      // Update state using the updater function
       setCollaborators((prevCollaborators) => [
         ...prevCollaborators,
-        { _id: userId, email, access: "view" },
+        { _id: userId, user: { email: email }, access: "view" },
       ]);
-
+  
+      // Update search results
       setSearchResults((prevResults) =>
         prevResults.filter((result) => result._id !== userId)
       );
+  
+      // You can log the new collaborator separately
+      console.log("Added collaborator:", { _id: userId, email, access: "view" });
     } catch (err) {
       console.error("Error adding collaborator:", err);
     }
-  };
+  };  
 
   // Remove collaborator handler
   const handleRemoveCollaborator = async (collaboratorId) => {

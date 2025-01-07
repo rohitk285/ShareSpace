@@ -51,13 +51,17 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
 
       ```env
       PORT=<your-port-number>
-      MONGODB_URI =<your_mongodb_uri>
+      MONGODB_URI=<your_mongodb_uri>
       JWT_SECRET=<your-jwt-secret>
       GOOGLE_CLIENT_ID=<your-google-client-id>
       GOOGLE_CLIENT_SECRET=<your-google-client-secret>
       SESSION_SECRET=<your-session-secret>
       SERVICE_ACCOUNT_FILE=<path-to-your-service-account-file>
       ```
+
+      - Use PORT=3000 if using docker. If docker is not being used to run the app, use PORT=8080.
+      - 
+      - Use any complex string as your JWT secret (eg. JWT_SECRET=as23de55f21ef59yz32) 
 
    2. **Create a `.env` file in the `frontend` folder and add the following variable:**
 

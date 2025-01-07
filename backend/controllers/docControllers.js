@@ -66,12 +66,12 @@ const createDocument = async (req, res) => {
 const removeCollaborator = async (req, res) => {
   const { docId, collaboratorId } = req.body;
   try {
-    // Fetch documents for the given user _id
     await Docs.updateOne(
       { _id: docId },
-      { $pull: { collaborators: collaboratorId } }
+      { $pull: { collaborators: { _id: collaboratorId } } }
     );
-    res.status(200).send("Successfully deleted");
+
+    res.status(200).send("Successfully deleted collaborator");
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -94,6 +94,7 @@ const addCollaborator = async (req, res) => {
 const updateCollaboratorAccess = async (req, res) => {
   const { docId, collaboratorId, access } = req.body;
   try {
+    console.log(collaboratorId);
     await Docs.updateOne(
       { _id: docId, "collaborators.user": collaboratorId },
       { $set: { "collaborators.$.access": access } }
