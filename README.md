@@ -60,7 +60,7 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
       ```
 
       - Use PORT=3000 if using docker. If docker is not being used to run the app, use PORT=8080.
-      - 
+      - Use your mongodb connection string as your MONGODB_URI
       - Use any complex string as your JWT secret (eg. JWT_SECRET=as23de55f21ef59yz32) 
 
    2. **Create a `.env` file in the `frontend` folder and add the following variable:**
