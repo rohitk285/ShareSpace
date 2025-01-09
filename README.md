@@ -108,6 +108,7 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
 10. RBAC to manage user permissions (View-Only and Editor) in document collaboration (Level 2).
 11. End-to-End Encryption for chat messages using crypto.js (Level 3).
 12. User Presence indicator - whether user is online/offline (Additional feature).
+13. CI/CD Pipeline Integration using GitHub Actions (Level 3).
 
 ## API Endpoints
 
@@ -126,6 +127,7 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
 5. TailwindCSS
 6. Docker Desktop
 7. Nginx
+8. Github Actions
 8. APIs used :
    - Google Drive API (For file storage)
    - Google Auth 2.0 (For Google Sign In)
