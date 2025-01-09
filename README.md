@@ -62,7 +62,7 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
       - Use PORT=3000 if using docker. If docker is not being used to run the app, use PORT=8080.
       - Use your mongodb connection string as your MONGODB_URI.
       - Use any complex string as your JWT secret (eg. JWT_SECRET=as23de55f21ef59yz32).
-      - [Click here](#google-auth-setup) to see how to get GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.
+      - [Click here](#google-auth-setup) to see how to get GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET for Google Auth.
       - Use any complex string as your session secret (eg. SESSION_SECRET=cd43tg59y21ef79tz22).
       - [Click here](#service-account-file-setup) to see how to get SERVICE_ACCOUNT_FILE for Google Drive API.
 
