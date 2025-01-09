@@ -60,8 +60,11 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
       ```
 
       - Use PORT=3000 if using docker. If docker is not being used to run the app, use PORT=8080.
-      - Use your mongodb connection string as your MONGODB_URI
-      - Use any complex string as your JWT secret (eg. JWT_SECRET=as23de55f21ef59yz32) 
+      - Use your mongodb connection string as your MONGODB_URI.
+      - Use any complex string as your JWT secret (eg. JWT_SECRET=as23de55f21ef59yz32).
+      - [Click here](#google-auth-setup) to see how to get GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.
+      - Use any complex string as your session secret (eg. SESSION_SECRET=cd43tg59y21ef79tz22).
+      - [Click here](#service-account-file-setup) to see how to get SERVICE_ACCOUNT_FILE for Google Drive API.
 
    2. **Create a `.env` file in the `frontend` folder and add the following variable:**
 
@@ -70,7 +73,7 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
       ```
 
       - VITE_SECRET_KEY is used for encryption using crypto.js.
-      - Use any complex string as your secret key (eg. VITE_SECRET_KEY=as23de55f21ef59yz32)
+      - Use any complex string as your secret key (eg. VITE_SECRET_KEY=bf24de57f32ef59fd32)
 
 5. **Run the Application**
    1. **With Docker Desktop**
@@ -140,3 +143,20 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
 ## Known issues
    - Sometimes, there is a bit of lag when rendering the chats.
    - Video call request is not being sent properly over web-sockets and webRTC is causing some issues.
+
+## Google Auth setup
+   - Go to the Google Developer Console.
+   - Create a new project or select an existing one.
+   - Navigate to Credentials.
+   - Click Create Credentials > OAuth 2.0 Client ID.
+   - Configure the OAuth consent screen and provide the required information.
+   - Under Application Type, choose Web application.
+   - Once created, you will see the Client ID and Client Secret. Copy and paste them in your .env file.
+
+## Service Account File setup
+   - Go to the Google Cloud Console.
+   - Select your project.
+   - Navigate to IAM & Admin > Service Accounts.
+   - Click Create Service Account, provide a name, and assign necessary roles (e.g., Owner, Editor, or custom roles).
+   - After creating, click Create Key and select JSON. This will download the SERVICE_ACCOUNT_FILE.json to your computer.
+   - Upload the file to your project and reference it in the .env file.
