@@ -163,7 +163,9 @@ const MyChats = ({ fetchAgain }) => {
             marginBottom: "10px",
           }}
         >
-          <Typography variant="h4" sx={{fontFamily: "Oswald"}}>Chats</Typography>
+          <Typography variant="h4" sx={{ fontFamily: "Oswald" }}>
+            Chats
+          </Typography>
           <GroupChatModal>
             <Button
               variant="contained"
@@ -214,7 +216,10 @@ const MyChats = ({ fetchAgain }) => {
                     },
                   }}
                 >
-                  <Typography variant="body1" sx={{ fontWeight: "bold", fontFamily: "Open Sans" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", fontFamily: "Open Sans" }}
+                  >
                     {!chat.isGroupChat
                       ? getSender(loggedUser, chat.users)
                       : chat.chatName}
@@ -223,7 +228,7 @@ const MyChats = ({ fetchAgain }) => {
                     <Typography
                       variant="body2"
                       className="text-sm text-gray-500"
-                      sx={{fontFamily: "Mulish", fontWeight: "bold"}}
+                      sx={{ fontFamily: "Mulish", fontWeight: "bold" }}
                     >
                       <b>{chat.latestMessage.sender.name}: </b>
                       {chat.latestMessage.content.length > 50
@@ -246,24 +251,59 @@ const MyChats = ({ fetchAgain }) => {
         onClose={() => setOpenDrawer(false)}
       >
         <Box className="p-4 w-80">
+          {/* Search Input */}
           <TextField
             label="Search by name or email"
             variant="outlined"
             fullWidth
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
-            className="mb-4"
+            sx={{
+              marginBottom: "16px", // Adds spacing below the search bar
+            }}
           />
 
+          {/* Search Results */}
           {loading ? (
             <ChatLoading />
           ) : (
             searchResult?.map((user) => (
-              <UserListItem
+              <Box
                 key={user._id}
-                user={user}
-                handleFunction={() => accessChat(user._id)}
-              />
+                onClick={() => accessChat(user._id)}
+                sx={{
+                  padding: "8px 16px",
+                  marginBottom: "10px",
+                  cursor: "pointer",
+                  borderRadius: "4px",
+                  display: "flex",
+                  flexDirection: "column",
+                  transition: "background-color 0.2s ease",
+                  "&:hover": {
+                    backgroundColor: "#e6f7ff", // Light blue background on hover
+                  },
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: "500",
+                    fontFamily: "Mulish",
+                    color: "#333", // Professional dark text color
+                  }}
+                >
+                  {user.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontFamily: "Mulish",
+                    color: "#666", // Subtle gray for email
+                  }}
+                >
+                  {user.email}
+                </Typography>
+              </Box>
             ))
           )}
 

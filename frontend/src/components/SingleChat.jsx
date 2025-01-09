@@ -324,7 +324,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    width: "100%"
+                    width: "100%",
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -357,7 +357,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     width: "100%",
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center"}}>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
                     {getSender(user, selectedChat.users)}
                     <span
                       style={{
@@ -366,7 +366,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                           ? "green"
                           : "red",
                         fontSize: "0.9rem",
-                        fontFamily: "Nunito"
+                        fontFamily: "Nunito",
                       }}
                     >
                       {getPeerStatus(getPeerId(selectedChat, user))
@@ -447,6 +447,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     backgroundColor: "#E0E0E0",
                     borderRadius: "10px",
                     flex: 1,
+                    padding: "4px", // Adds padding between text and edges
+                    fontSize: "1rem", // Makes text size professional
+                    fontFamily: "Arial, sans-serif", // Changes font to a clean professional look
+                    border: "1px solid #ccc", // Adds a subtle border
+                    outline: "none", // Removes outline for focus
+                    "&:focus": {
+                      borderColor: "#3f51b5", // Sets border color on focus for a sleek effect
+                      boxShadow: "0 0 5px rgba(63, 81, 181, 0.5)", // Adds a light shadow on focus
+                    },
                   }}
                   placeholder="Enter a message..."
                   value={newMessage}

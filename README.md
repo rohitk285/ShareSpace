@@ -142,6 +142,7 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
 
 ## Known issues
    - Sometimes, there is a bit of lag when rendering the chats.
+   - Sometimes, when a new chat is initiated, chats of other users are immediately displayed. When the first text is sent, it goes back to normal.
    - Video call request is not being sent properly over web-sockets and webRTC is causing some issues.
 
 ## Google Auth setup

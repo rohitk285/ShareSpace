@@ -1,4 +1,4 @@
-name: Deploy MERN App
+name: Deploy ShareSpace
 
 on:
   push:
