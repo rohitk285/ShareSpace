@@ -110,8 +110,8 @@ To prioritize security, ShareSpace incorporates a robust authentication system w
 9. Notification system using web sockets (Level 2).
 10. RBAC to manage user permissions (View-Only and Editor) in document collaboration (Level 2).
 11. End-to-End Encryption for chat messages using crypto.js (Level 3).
-12. User Presence indicator - whether user is online/offline (Additional feature).
-13. CI/CD Pipeline Integration using GitHub Actions (Level 3).
+12. CI/CD Pipeline Integration using GitHub Actions (Level 3).
+13. User Presence indicator - whether user is online/offline (Additional feature).
 
 ## API Endpoints
 
