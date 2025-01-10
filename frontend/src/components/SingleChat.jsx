@@ -83,7 +83,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         `http://localhost:8080/api/message/${selectedChat._id}`,
         config
       );
-
+      // console.log(data);
       // decrypting the messages before setting them
       const decryptedMessages = data.map((message) => ({
         ...message,

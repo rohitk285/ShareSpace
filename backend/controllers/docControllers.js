@@ -94,9 +94,9 @@ const addCollaborator = async (req, res) => {
 const updateCollaboratorAccess = async (req, res) => {
   const { docId, collaboratorId, access } = req.body;
   try {
-    console.log(collaboratorId);
+    // console.log(collaboratorId);
     await Docs.updateOne(
-      { _id: docId, "collaborators.user": collaboratorId },
+      { _id: docId, "collaborators._id": collaboratorId },
       { $set: { "collaborators.$.access": access } }
     );
     res.status(200).send("Successfully changed access");

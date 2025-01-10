@@ -393,8 +393,7 @@ const DocumentPage = () => {
                   <Grid item xs={12} sm={6} md={4} key={index}>
                     <Box
                       className="p-3 bg-gray-800 text-white rounded-md flex flex-col justify-between"
-                      sx={{ cursor: "pointer", boxShadow: 2 }}
-                      onClick={() => openDocument(doc._id)}
+                      sx={{ boxShadow: 2 }}
                     >
                       <div className="mb-2">
                         <h1
