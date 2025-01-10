@@ -4,4 +4,6 @@ const Provider = () => {
   };
   
   export default Provider;
+
+  // This component is not needed. Remove
   

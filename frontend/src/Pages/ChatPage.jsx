@@ -19,7 +19,7 @@ const Chatpage = () => {
           width: "100%",
           height: "91.5vh",
           padding: "10px",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#00254d",
         }}
       >
         <Grid container spacing={2} sx={{ height: "100%" }}>
