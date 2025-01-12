@@ -35,11 +35,13 @@ jobs:
 
       - name: Build and push backend image
         run: |
+          pwd
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mern-backend ./backend
           docker push ${{ secrets.DOCKER_USERNAME }}/mern-backend
 
       - name: Build and push frontend image
         run: |
+          pwd
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mern-frontend ./frontend
           docker push ${{ secrets.DOCKER_USERNAME }}/mern-frontend
 
@@ -50,6 +52,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            pwd
             cd /Users/ROHIT/ShareSpace
             docker-compose pull
             docker-compose down
