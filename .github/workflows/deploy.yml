@@ -47,7 +47,8 @@ jobs:
 
       - name: Deploy on remote server
         run: |
-          cd /Users/ROHIT/ShareSpace
+          mkdir deploy
+          cd deploy
           docker-compose pull
           docker-compose down
           docker-compose up -d
