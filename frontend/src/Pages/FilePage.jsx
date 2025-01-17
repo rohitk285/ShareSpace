@@ -64,12 +64,20 @@ const FilePage = () => {
   useEffect(() => {
     if (user) {
       const fetchData = async () => {
-        setIsFetching(true); // Show the loading spinner
+        setIsFetching(true); 
         await fetchUploadedFiles();
         await fetchSharedFiles();
-        setIsFetching(false); // Hide the loading spinner
+        setIsFetching(false); 
       };
       fetchData();
+
+      // polling function to fetch files every 3 seconds
+      const pollingInterval = setInterval(() => {
+        fetchSharedFiles();
+      }, 3000);
+
+      // cleanup interval for mounted polling component
+      return () => clearInterval(pollingInterval);
     }
   }, [user]);
 
@@ -151,10 +159,8 @@ const FilePage = () => {
 
       {user && <SideDrawer />}
 
-      {/* File Listing Section */}
       <div className="mb-6 px-4">
         <h1 className="font-bold text-2xl p-2 mb-4 mt-4">Your Files</h1>
-        {/* Header Section */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-4">
             {/* Toggle Buttons */}
@@ -180,7 +186,7 @@ const FilePage = () => {
             </button>
           </div>
 
-          {/* Upload Files Button */}
+          {/* Upload Files button */}
           {isUploadedView && (
             <button
               onClick={() => setShowUploadModal(true)}
@@ -207,7 +213,6 @@ const FilePage = () => {
                   className="bg-white p-3 rounded-md shadow-sm flex flex-col justify-between"
                 >
                   <div className="flex items-center space-x-3">
-                    {/* File Icon */}
                     {file.link.endsWith(".pdf") ? (
                       <img src={pdfIcon} alt="PDF Icon" className="h-8 w-8" />
                     ) : file.fileName.endsWith(".jpg") ||
@@ -225,13 +230,12 @@ const FilePage = () => {
                         className="h-8 w-8"
                       />
                     )}
-                    {/* File Name */}
+                    
                     <p className="font-semibold text-gray-800 text-sm truncate">
                       {file.fileName}
                     </p>
                   </div>
 
-                  {/* File Actions */}
                   <div className="mt-2 flex justify-between items-center">
                     <div className="flex space-x-3">
                       <a
@@ -295,18 +299,15 @@ const FilePage = () => {
                       className="h-8 w-8"
                     />
                   )}
-                  {/* File Name */}
                   <p className="font-semibold text-gray-800 text-sm truncate">
                     {file.fileName}
                   </p>
                 </div>
 
-                {/* File Owner */}
                 <p className="text-xs text-gray-600 mt-1">
                   Owner: {file.owner.email}
                 </p>
 
-                {/* File Actions */}
                 <div className="mt-2 flex justify-between items-center">
                   <div className="flex space-x-3">
                     <a
@@ -334,13 +335,12 @@ const FilePage = () => {
         </div>
       </div>
 
-      {/* Share Modal */}
       <ShareFileModal
         isVisible={showShareModal}
         file={selectedFile}
         onClose={() => setShowShareModal(false)}
       />
-      {/* Modal for File Upload */}
+      {/* file upload modal */}
       <UploadFileModal
         isVisible={showUploadModal}
         onClose={() => setShowUploadModal(false)}
