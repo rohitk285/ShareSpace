@@ -16,6 +16,7 @@ const FilePage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploadedView, setIsUploadedView] = useState(true); // Toggle view state
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const { user } = ChatState();
 
   // Fetch uploaded files from the backend
@@ -62,8 +63,13 @@ const FilePage = () => {
 
   useEffect(() => {
     if (user) {
-      fetchUploadedFiles();
-      fetchSharedFiles();
+      const fetchData = async () => {
+        setIsFetching(true); // Show the loading spinner
+        await fetchUploadedFiles();
+        await fetchSharedFiles();
+        setIsFetching(false); // Hide the loading spinner
+      };
+      fetchData();
     }
   }, [user]);
 
@@ -105,7 +111,11 @@ const FilePage = () => {
         };
         await axios.post(
           "http://localhost:8080/api/share-file/deleteSharedFile",
-          { sharedFileId: file._id, originalFileId: file.originalFileId, userId: user._id },
+          {
+            sharedFileId: file._id,
+            originalFileId: file.originalFileId,
+            userId: user._id,
+          },
           config
         );
 
@@ -123,6 +133,16 @@ const FilePage = () => {
 
   return (
     <div className="w-full h-screen bg-gray-50 relative">
+      {/* Loading Spinner for Fetching Files */}
+      {isFetching && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
+          <div className="text-blue-500 text-xl font-semibold">
+            Loading your files...
+          </div>
+        </div>
+      )}
+
+      {/* Loading Spinner for File Actions */}
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="text-white text-lg">Processing your request...</div>

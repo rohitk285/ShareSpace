@@ -134,6 +134,7 @@ socketIo.on("connection", (socket) => {
     socket.emit("load-document", document); // Emit the document data when loaded
 
     socket.on("send-changes", (delta) => {
+      console.log(delta);
       // Emit the changes to all clients in the room except the sender
       socket.broadcast.to(documentId).emit("receive-changes", delta);
     });
@@ -141,7 +142,8 @@ socketIo.on("connection", (socket) => {
     socket.on("save-document", async (data) => {
       try {
         // Save the document to the database
-        await Docs.findByIdAndUpdate(documentId, { data });
+        console.log(documentId, data);
+        await Docs.updateOne({_id: documentId}, {$set: {data: data}});
       } catch (err) {
         console.error("Error while saving document", err);
       }
