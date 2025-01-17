@@ -142,7 +142,6 @@ socketIo.on("connection", (socket) => {
     socket.on("save-document", async (data) => {
       try {
         // Save the document to the database
-        console.log(documentId, data);
         await Docs.updateOne({_id: documentId}, {$set: {data: data}});
       } catch (err) {
         console.error("Error while saving document", err);
