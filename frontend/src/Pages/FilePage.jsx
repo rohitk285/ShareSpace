@@ -133,7 +133,7 @@ const FilePage = () => {
 
   return (
     <div className="w-full h-screen bg-gray-50 relative">
-      {/* Loading Spinner for Fetching Files */}
+      {/* loading spinner for file fetching*/}
       {isFetching && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
           <div className="text-blue-500 text-xl font-semibold">
@@ -142,7 +142,7 @@ const FilePage = () => {
         </div>
       )}
 
-      {/* Loading Spinner for File Actions */}
+      {/* loading spinner for deletion */}
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="text-white text-lg">Processing your request...</div>

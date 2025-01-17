@@ -25,6 +25,7 @@ const DocumentPage = () => {
   const [docs, setDocs] = useState([]);
   const [docsCollab, setDocsCollab] = useState([]);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const { user } = ChatState();
   const navigate = useNavigate();
 
@@ -39,48 +40,55 @@ const DocumentPage = () => {
   const [collaborators, setCollaborators] = useState([]);
   const [docCreator, setDocCreator] = useState(null);
 
+  async function fetchDocs() {
+    try {
+      if (user) {
+        const response = await axios.post(
+          "http://localhost:8080/api/document/fetchDocuments",
+          { _id: user._id },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        setDocs(response.data);
+      }
+    } catch (err) {
+      console.error("Error while fetching docs", err);
+    }
+  }
+
+  async function fetchDocsCollab() {
+    try {
+      if (user) {
+        const response = await axios.post(
+          "http://localhost:8080/api/document/fetchDocumentsCollab",
+          { _id: user._id },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        // console.log(response.data);
+        setDocsCollab(response.data);
+      }
+    } catch (err) {
+      console.error("Error while fetching collab docs", err);
+    }
+  }
+
   useEffect(() => {
-    async function fetchDocs() {
-      try {
-        if (user) {
-          const response = await axios.post(
-            "http://localhost:8080/api/document/fetchDocuments",
-            { _id: user._id },
-            {
-              headers: {
-                Authorization: `Bearer ${user.token}`,
-              },
-            }
-          );
-          setDocs(response.data);
-        }
-      } catch (err) {
-        console.error("Error while fetching docs", err);
-      }
+    if (user) {
+      const fetchData = async () => {
+        setIsFetching(true); // Show the loading spinner
+        await fetchDocs();
+        await fetchDocsCollab();
+        setIsFetching(false); // Hide the loading spinner
+      };
+      fetchData();
     }
-
-    async function fetchDocsCollab() {
-      try {
-        if (user) {
-          const response = await axios.post(
-            "http://localhost:8080/api/document/fetchDocumentsCollab",
-            { _id: user._id },
-            {
-              headers: {
-                Authorization: `Bearer ${user.token}`,
-              },
-            }
-          );
-          // console.log(response.data);
-          setDocsCollab(response.data);
-        }
-      } catch (err) {
-        console.error("Error while fetching collab docs", err);
-      }
-    }
-
-    fetchDocs();
-    fetchDocsCollab();
   }, [user]);
 
   // Handle opening the collaborators modal
@@ -246,6 +254,16 @@ const DocumentPage = () => {
 
   return (
     <div className="w-full h-screen">
+
+      {/* loading spinner for documents fetching*/}
+      {isFetching && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
+          <div className="text-blue-500 text-xl font-semibold">
+            Loading your documents...
+          </div>
+        </div>
+      )}
+
       {user && <SideDrawer />}
       <div className="p-6">
         <div className="container mx-auto flex justify-between items-center mb-8">
