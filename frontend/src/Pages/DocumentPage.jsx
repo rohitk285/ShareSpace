@@ -255,7 +255,7 @@ const DocumentPage = () => {
   return (
     <div className="w-full h-screen">
 
-      {/* loading spinner for documents fetching*/}
+      {/* loading spinner for documents fetching */}
       {isFetching && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
           <div className="text-blue-500 text-xl font-semibold">
